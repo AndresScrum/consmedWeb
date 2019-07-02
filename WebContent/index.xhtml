@@ -1,0 +1,95 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui">
+
+
+<h:head>
+	<link rel="stylesheet" href="resources/css/style.css"></link>
+</h:head>
+<body>
+	<h:body>
+		<div>
+			<ul>
+				<!-- 
+  <li><a href="#home">Home</a></li>
+  <li><a href="#news">News</a></li>
+  <li><a href="#contact">Contact</a></li> -->
+				<li style="float: right"><a class="active" href="/consmedWeb/faces/login.xhtml"><i class="pi pi-user"></i>Iniciar
+						sesión</a></li>
+			</ul>
+		</div>
+		<div class="slider">
+			<ul>
+				<li><img src="resources/img/slider.jpg" alt="" /></li>
+			</ul>
+		</div>
+		<br></br>
+		<div>
+		<p:fieldset legend="Descripción proyecto" style="margin-bottom:20px">
+						<h:panelGrid columns="2" cellpadding="5">
+							<h:outputText
+								value="CONSMED es una Aplicación Web para reservar citas médicas, donde los pacientes pueden seleccionar
+								al médico con el cual requiera su atención con el día y la hora seleccionadas.
+								Además se autorealiza la factura." />
+						</h:panelGrid>
+					</p:fieldset>
+		</div>
+		
+		<div class="text-center">
+			<h1>Equipo de desarrollo</h1>
+		</div>
+<br></br>
+<div class="slider">
+			<ul>
+				<li><img src="resources/img/team.jpg" alt="" /></li>
+			</ul>
+		</div>
+		<br></br>
+		<div class="row">
+			<div class="column">
+				<div class="card">
+					<p:fieldset legend="Andrés Buitrón" style="margin-bottom:20px">
+						<h:panelGrid columns="2" cellpadding="5">
+							<h:outputText
+								value="Estudiante de CISIC y SCRUM Master." />
+						</h:panelGrid>
+					</p:fieldset>
+				</div>
+			</div>
+			<div class="column">
+				<div class="card">
+					<p:fieldset legend="Fausto Necpas" style="margin-bottom:20px">
+						<h:panelGrid columns="2" cellpadding="5">
+							<h:outputText
+								value="Estudiante de CISIC y parte del equipo de desarrollo." />
+						</h:panelGrid>
+					</p:fieldset>
+				</div>
+			</div>
+			<div class="column">
+				<div class="card">
+					<p:fieldset legend="Mauricio Chiriboga" style="margin-bottom:20px">
+						<h:panelGrid columns="2" cellpadding="5">
+							<h:outputText
+								value="Estudiante de CISIC y parte del equipo de desarrollo." />
+						</h:panelGrid>
+					</p:fieldset>
+				</div>
+			</div>
+			<div class="column">
+				<div class="card">
+					<p:fieldset legend="Sebastian Echeverria" style="margin-bottom:20px">
+						<h:panelGrid columns="2" cellpadding="5">
+							<h:outputText
+								value="Estudiante de CISIC y parte del equipo de desarrollo junto con documentación" />
+						</h:panelGrid>
+					</p:fieldset>
+				</div>
+			</div>
+		</div>
+	</h:body>
+</body>
+</html>

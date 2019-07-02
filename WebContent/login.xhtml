@@ -1,0 +1,76 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> 
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"> 
+
+<h:head>
+<link rel="stylesheet" type="text/css" href="/css/bootstrap.css" media="screen"></link>
+</h:head> 
+<body>
+<div align="center"
+>
+<h:form>
+   <div align="center">
+    <h3>
+    Módulo de consultas médicas
+    </h3>
+    
+
+  <p:panelGrid columns="2" cellpadding="5" >
+   <h1>HOSPITAL</h1>     <p:graphicImage value="administrador/images/utn_utn.png" style="width:90px"></p:graphicImage>
+  
+  </p:panelGrid>
+ 
+  </div>
+  <br></br>
+    <br></br>
+  <p></p>
+ <div class="imgcontainer">
+    <p:graphicImage  value="administrador/images/utn.png" style="width:90px"></p:graphicImage>
+  </div>
+  <p></p>
+   <p></p>
+    <p></p>
+  
+<p:panel header="Login" style="width:400px">
+<h:panelGrid columns="2" cellpadding="5">
+            <h:outputLabel  value="Correo:" />
+            <p:inputText  required="true" requiredMessage="Ingrese el correo !" value="#{authBeanLogin.correo_usua}" />
+             
+            <h:outputLabel  value="Contraseña:" />
+            <p:password   required="true" requiredMessage="Ingrese una contraseña" value="#{authBeanLogin.contrasenia_usua}" />
+             <h:outputLabel></h:outputLabel>
+           
+                <p:commandButton value="INGRESAR" id="ajax"  action="#{authBeanLogin.actionLogin()}" style="width:188px" styleClass="ui-priority-primary" />
+             
+        </h:panelGrid>
+</p:panel>
+</h:form> 
+</div>
+ <h:form>
+ 
+
+  <div class="container">
+<h:panelGrid columns="1" cellpadding="5">
+ 
+        </h:panelGrid>
+  <div class="container" align="center" style="background-color:#f1f1f1">
+  
+    <span><a href="#"><u>Olvidé mi usuario o contraseña</u></a></span>
+    <br></br>    <br></br>    <br></br>
+    <span><a href="registrarPaciente.xhtml"><u>REGISTRARSE</u></a></span>
+  </div>
+  </div>
+</h:form>
+<p:outputLabel ></p:outputLabel>
+	<p:growl>
+		<p:autoUpdate />
+	</p:growl>
+	<p:messages>
+		<p:autoUpdate />
+	</p:messages>
+</body> 
+
+</html>

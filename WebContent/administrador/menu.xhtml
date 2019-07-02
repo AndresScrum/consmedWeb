@@ -1,0 +1,39 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> 
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"> 
+
+<h:head></h:head> 
+<body> 
+<div id="menu">
+		<h:form>
+			<p:menubar>
+				<p:menuitem>
+					<p:graphicImage value="resources/images/logo1.png"></p:graphicImage>
+				</p:menuitem>
+				
+				<p:menuitem value="Pacientes" title="Pacientes" icon="fa fa-user"
+					action="paciente?faces-redirect=true"></p:menuitem>
+					<p:menuitem value="Médicos" title="Pacientes" icon="fa fa-user-md"
+					action="medico?faces-redirect=true"></p:menuitem>
+					<p:menuitem value="Roles" title="Pacientes" icon="fa fa-users"
+					action="rol?faces-redirect=true"></p:menuitem>
+			<f:facet name="options">
+					<p:commandButton title="Datos de usuario" icon="fa fa-user-secret"
+						value="#{authBeanLogin.login.nombres}" />
+					<p:commandButton title="Cerrar sesión" icon="fa fa-power-off"
+						action="#{authBeanLogin.actionCerrarSesion()}" />
+				</f:facet>
+			</p:menubar>
+		</h:form>
+	</div>
+<p:growl>
+		<p:autoUpdate />
+	</p:growl>
+	<p:messages>
+		<p:autoUpdate />
+	</p:messages>
+</body> 
+</html>

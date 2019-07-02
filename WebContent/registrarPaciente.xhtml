@@ -1,0 +1,77 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+
+
+	<meta name="viewport"
+		content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0" />
+
+
+	<!-- Estilos -->
+	<link rel="stylesheet" href="administrador/css/estilos.css" />
+
+	<title>Formulario Login y Registro de Usuarios</title>
+</h:head>
+<body>
+
+<div align="center">
+ <h1>Hospital</h1>
+  <h3>Registro de paciente</h3>
+</div>
+
+<h:form>
+
+  <div class="group">
+
+  <p:inputText value="#{authBeanLogin.nombres_pac}"  />
+    <p:outputLabel value="Nombres"></p:outputLabel>
+  </div>
+  <div class="group">
+
+  <p:inputText  value="#{authBeanLogin.apellidos_pac}"/>
+    <p:outputLabel value="Apellidos"></p:outputLabel>
+  </div>
+    <div class="group">
+
+  <p:inputText  value="#{authBeanLogin.identificacion}"/>
+    <p:outputLabel value="Identificación"></p:outputLabel>
+  </div>
+    <div class="group">
+
+  <p:inputText  value="#{authBeanLogin.correo_pac}"/>
+    <p:outputLabel value="Correo"></p:outputLabel>
+  </div>
+    <div class="group">
+
+  <p:inputText value="#{authBeanLogin.telefono_pac}" />
+    <p:outputLabel value="Teléfono"></p:outputLabel>
+  </div>
+    <div class="group">
+
+  <p:inputText value="#{authBeanLogin.direccion_pac}" />
+    <p:outputLabel value="Dirección"></p:outputLabel>
+  </div>
+       <div class="group">
+
+  <p:password value="#{authBeanLogin.contrasenia_pac}"></p:password>
+      <p:outputLabel value="Contraseña"></p:outputLabel>
+  </div>
+  
+<p:commandButton styleClass="button buttonBlue" value="Registrarse" action="#{authBeanLogin.actionIngresarPaciente()}"> </p:commandButton>
+  
+</h:form>
+	<p:growl>
+		<p:autoUpdate />
+	</p:growl>
+	<p:messages>
+		<p:autoUpdate />
+	</p:messages>
+
+
+</body>
+</html>

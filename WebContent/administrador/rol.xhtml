@@ -1,0 +1,155 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+	<style type="text/css">
+/** Demo **/
+.ui-outputlabel {
+	font-weight: bold;
+}
+
+.ui-orderlist .ui-orderlist-list {
+	height: auto;
+}
+</style>
+</h:head>
+<body>
+	<div id="menu">
+		<h:form>
+			<p:menubar>
+				<p:menuitem>
+					<p:graphicImage value="resources/images/logo1.png"></p:graphicImage>
+				</p:menuitem>
+				<p:menuitem value="ATRÁS" title="ATRÁS" icon="fa fa-arrow-left"
+					action="/segaccesos/administrador/index?faces-redirect=true" />
+				<p:menuitem value="Inicio" title="Inicio" icon="fa fa-home"
+					action="/segaccesos/menu?faces-redirect=true"></p:menuitem>
+				<p:menuitem value="Nuevo Rol " title="Ingresar Nuevo Rol "
+					icon=" fa fa-plus " onclick="PF('nuevoRol').show();"></p:menuitem>
+				<p:menuitem value="Nueva Especialidad"
+					title="Ingresar Nueva Especialida" icon=" fa fa-plus "
+					onclick="PF('nuevaEspecialidad').show();"></p:menuitem>
+				<f:facet name="options">
+					<p:commandButton title="Datos de usuario" icon="fa fa-user"
+						value="#{authBeanLogin.login.nombres}" />
+					<p:commandButton title="Cerrar sesión" icon="fa fa-sign-out"
+						action="#{authBeanLogin.actionCerrarSesion()}" />
+				</f:facet>
+			</p:menubar>
+		</h:form>
+	</div>
+	<p:growl>
+		<p:autoUpdate />
+	</p:growl>
+	<p:messages>
+		<p:autoUpdate />
+	</p:messages>
+
+
+	<p:dialog header="Ingresar Nuevo Rol " widgetVar="nuevoRol"
+		id="nuevoRol" modal="true" height="500" resizable="true"
+		responsive="true" minimizable="true" maximizable="true"
+		appendTo="@(body)">
+		<h:form id="form1">
+<div class="ui-fluid">
+				<p:panelGrid columns="4" layout="grid">
+
+				<p:outputLabel value="Nombre:" />
+				<p:inputText required="true" value="#{medBeanMedico.nombre_rol}"
+					requiredMessage="Ingrese los nombres del Paciente!" maxlength="100" />
+	<p:outputLabel value="Activo:" />
+					<p:selectOneMenu id="activo" value="#{medBeanMedico.activo_rol}">
+						<f:selectItem itemLabel="ACTIVO" itemValue="true" />
+						<f:selectItem itemLabel="INACTIVO" itemValue="false" />
+
+					</p:selectOneMenu>				
+
+			</p:panelGrid>
+<p:panelGrid columns="2" layout="grid">
+			<p:commandButton value="INGRESAR" icon="fa fa-arrow-circle-right"
+				style="width:100%"
+actionListener="#{medBeanMedico.actionListenerCargarAuthRol()}"
+				oncomplete="editarRol" update="form2" ajax="false">
+				</p:commandButton>
+			<p:button value="CANCELAR" style="width:100%" icon="fa fa-times" dismiss="modal" />
+	</p:panelGrid>
+	</div>
+		</h:form>
+	</p:dialog>
+
+
+
+
+
+
+
+
+			<h:form id="form2">
+<div class="ui-fluid">
+			
+					<p:dataTable var="rol" widgetVar="tabla1"
+						value="#{medBeanMedico.listaRoles}" reflow="true" 
+					 rows="10" paginator="true"
+					paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+					rowsPerPageTemplate="5,10,15">
+						<f:facet name="header">
+							<p:outputLabel value="Lista de Médicos"></p:outputLabel>
+						</f:facet>
+						<p:column headerText="Id" style="width:50px">
+							<h:outputText value="#{rol.idRol}" />
+						</p:column>
+						
+						<p:column headerText="Nombres">
+							<h:outputText value="#{rol.nombreRol}" />
+						</p:column>
+
+						<p:column headerText="Activo">
+							<h:outputText value="#{rol.activoRol}" />
+						</p:column>
+							
+						<p:column headerText="OPCIONES" style="width:90px" priority="1">
+							<p:commandButton icon="fa fa-pencil" actionListener="#{medBeanMedico.actionListenerCargarMedMedico(med)}"
+								onclick="PF('editarRol').show();" title="Editar" update="@form"></p:commandButton>
+							<p:commandButton update="@form"
+								style="border:#FC1F0D;background-color:#FC1F0D" title="Eliminar"
+								icon="fa fa-times">
+								<p:confirm header="Confirmación" message="Desea eliminar?"
+									icon="fa fa-times" />
+							</p:commandButton>
+</p:column>
+					</p:dataTable>
+</div>
+				</h:form>
+<p:dialog header="Editar ROl " widgetVar="editarRol"
+		id="editarRol" modal="true" height="300" resizable="true"
+		responsive="true" minimizable="true" maximizable="true"
+		appendTo="@(body)">
+		<h:form id="form10">
+<div class="ui-fluid">
+				<p:panelGrid columns="4" layout="grid">
+                <p:outputLabel value="Id:" />
+				<p:inputText  value="#{medBeanMedico.rol.nombreRol}" disabled="true" />
+				
+				<p:outputLabel value="Nombres:" />
+				<p:inputText required="true" value="#{medBeanMedico.rol.nombreRol}"
+					requiredMessage="Ingrese los nombres del Paciente!" maxlength="100" />
+				
+
+			</p:panelGrid>
+<p:panelGrid columns="2" layout="grid">
+			<p:commandButton value="INGRESAR" icon="fa fa-arrow-circle-right"
+				style="width:100%"
+
+				oncomplete="nuevoRol" update="form2" ajax="false">
+				</p:commandButton>
+			<p:button value="CANCELAR" style="width:100%" icon="fa fa-times" dismiss="modal" />
+	</p:panelGrid>
+	</div>
+		</h:form>
+	</p:dialog>
+</body>
+</html>

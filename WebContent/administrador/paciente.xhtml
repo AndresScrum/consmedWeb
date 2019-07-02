@@ -1,0 +1,220 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> 
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"> 
+
+<h:head><style type="text/css">
+    /** Demo **/
+    .ui-outputlabel {
+        font-weight: bold;
+    }
+     
+    .ui-orderlist .ui-orderlist-list {
+        height: auto;
+    }
+</style></h:head> 
+<body> 
+<div id="menu">
+		<h:form>
+			<p:menubar>
+				<p:menuitem>
+					<p:graphicImage value="resources/images/logo1.png"></p:graphicImage>
+				</p:menuitem>
+				<p:menuitem value="ATRÁS" title="ATRÁS" icon="fa fa-arrow-left"
+					action="menu?faces-redirect=true"  />
+			
+				<p:menuitem value="nuevoPaciente" title="Ingresar nuevoPaciente"
+					icon=" fa fa-plus " onclick="PF('nuevoPaciente').show();"></p:menuitem>
+				<f:facet name="options">
+					<p:commandButton title="Datos de usuario" icon="fa fa-user"
+						value="#{authBeanLogin.login.nombres}" />
+					<p:commandButton title="Cerrar sesión" icon="fa fa-power-off"
+						action="#{authBeanLogin.actionCerrarSesion()}" />
+				</f:facet>
+			</p:menubar>
+		</h:form>
+	</div>
+<p:growl>
+		<p:autoUpdate />
+	</p:growl>
+	<p:messages>
+		<p:autoUpdate />
+	</p:messages>
+
+
+
+    	<p:dialog header="Ingresar nuevo paciente" widgetVar="nuevoPaciente"
+		id="nuevoPaciente" modal="true" height="500" resizable="true"
+		responsive="true" minimizable="true" maximizable="true"
+		appendTo="@(body)">
+		
+		<h:form>
+    <div class="ui-fluid">
+           <p:panelGrid columns="4"   layout="grid" >
+    
+       <p:outputLabel  value="Nombres:"/>
+            <p:inputText value="#{pacBeanPaciente.nombres_pac}" required="true" requiredMessage="Ingrese los nombres del Paciente!" maxlength="100" />
+             <p:outputLabel value="Apellidos:"/>
+            <p:inputText value="#{pacBeanPaciente.apellidos_pac}" required="true" requiredMessage="Ingrese los apellidos del Paciente!" maxlength="100" />
+             <p:outputLabel  value="Correo:"/>
+            <p:inputText value="#{pacBeanPaciente.correo_pac}" required="true" requiredMessage="Ingrese el correo del Paciente!" maxlength="50" />
+              <p:outputLabel  value="Identificación:"/>
+            <p:inputText value="#{pacBeanPaciente.identificacion}" required="true" requiredMessage="Ingrese la Ci/Ruc del paciente!" maxlength="20" />
+              <p:outputLabel  value="Teléfono:"/>
+            <p:inputText value="#{pacBeanPaciente.telefono_pac}" required="true" requiredMessage="Ingrese el teléfono del Paciente!" maxlength="20" />
+              <p:outputLabel  value="Dirección:"/>
+            <p:inputText value="#{pacBeanPaciente.direccion_pac}" required="true" requiredMessage="Ingrese la dirección del Paciente!" maxlength="100" />
+
+         <p:outputLabel  value="Foto:"/>
+       	<p:textEditor widgetVar="ingPac" required="true"
+						requiredMessage="Ingrese la imagen"
+						placeholder="Ingrese una imagen"
+						value="#{pacBeanPaciente.foto_pac}"  height="200">
+						<f:facet name="toolbar">
+							<span class="ql-formats">
+								<button class="ql-image" style="margin-right: 20px;"
+									title="Cargar Imagen"></button>
+							</span>
+							<span class="ql-formats"> <h:commandButton type="button"
+									onclick="PF('ingPac').clear();" title="Limpiar" />
+							</span>
+						</f:facet>
+					</p:textEditor>
+ </p:panelGrid>
+
+   	<p:panelGrid columns="1" layout="grid">
+					<p:commandButton value="INGRESAR" icon="fa fa-arrow-circle-right"
+						actionListener="#{pacBeanPaciente.actionListenerIngresarPaciente()}"
+						oncomplete="nuevaOpcion" update="@form,:form2:tabla1" ajax="false"></p:commandButton>
+									</p:panelGrid>
+    </div>
+</h:form> 
+</p:dialog>
+
+
+<h:form id="form2">
+    <div class="ui-fluid">
+       
+        <p:dataTable var="pac" widgetVar="tabla1" value="#{pacBeanPaciente.listaPacientes}" 
+       reflow="true" rows="10"
+						paginator="true"
+						paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+						rowsPerPageTemplate="5,10,15">
+            <f:facet name="header">
+            <p:outputLabel value="Lista de Pacientes"></p:outputLabel>
+            </f:facet>
+            <p:column headerText="Nombres">
+                <h:outputText value="#{pac.nombresPac}" />
+            </p:column>
+ 
+            <p:column headerText="Apellidos">
+                <h:outputText value="#{pac.apellidosPac}" />
+            </p:column>
+ 
+            <p:column headerText="Activo">
+                <h:outputText value="#{pac.activoPac}" />
+            </p:column>
+ 
+            <p:column headerText="Correo">
+                <h:outputText value="#{pac.correoPac}" />
+            </p:column>
+             <p:column headerText="Teléfono">
+                <h:outputText value="#{pac.telefonoPac}" />
+            </p:column>
+             <p:column headerText="Dirección">
+                <h:outputText value="#{pac.direccionPac}" />
+            </p:column>
+             <p:column headerText="Identificación">
+                <h:outputText value="#{pac.identificacion}" />
+            </p:column>
+              <p:column headerText="Rol">
+                <h:outputText value="#{pac.authUsuario.authRol.nombreRol}" />
+            </p:column>
+              <p:column headerText="Foto" style="width:100px">
+
+							<p:textEditor value="#{pac.fotoPac}" readonly="true">
+								<f:facet name="toolbar">
+									<span> </span>
+								</f:facet>
+							</p:textEditor>
+							</p:column>
+	<p:column headerText="OPCIONES" style="width:90px" priority="1">
+						<p:commandButton icon="fa fa-pencil"
+							onclick="PF('dlgEditPac').show();" title="Editar"
+							actionListener="#{pacBeanPaciente.actionListenerCargarPaciente(pac)}"
+							
+							update="form10"></p:commandButton>
+						<p:commandButton update="@form"
+						style="border:#FC1F0D;background-color:#FC1F0D"
+							action="#{pacBeanPaciente.actionListenerEliminarPaciente(pac.idPaciente)}"
+							title="Eliminar" icon="fa fa-times">
+							<p:confirm header="Confirmación" message="Desea eliminar?"
+								icon="fa fa-times" />
+						</p:commandButton>
+
+					</p:column>
+        </p:dataTable>
+ 
+    </div>
+</h:form>
+   	<p:dialog header="Editar paciente" widgetVar="dlgEditPac"
+		id="dlgEditPac" modal="true" height="500" resizable="true"
+		responsive="true" minimizable="true" maximizable="true"
+		appendTo="@(body)">
+		
+		<h:form id="form10">
+    <div class="ui-fluid">
+           <p:panelGrid columns="4"   layout="grid" >
+    
+       <p:outputLabel  value="Nombres:"/>
+            <p:inputText value="#{pacBeanPaciente.paciente.nombresPac}" required="true" requiredMessage="Ingrese los nombres del Paciente!" maxlength="100" />
+             <p:outputLabel value="Apellidos:"/>
+            <p:inputText value="#{pacBeanPaciente.paciente.apellidosPac}" required="true" requiredMessage="Ingrese los apellidos del Paciente!" maxlength="100" />
+             <p:outputLabel  value="Correo:"/>
+            <p:inputText value="#{pacBeanPaciente.paciente.correoPac}" required="true" requiredMessage="Ingrese el correo del Paciente!" maxlength="50" />
+              <p:outputLabel  value="Identificación:"/>
+            <p:inputText value="#{pacBeanPaciente.paciente.identificacion}" required="true" requiredMessage="Ingrese la Ci/Ruc del paciente!" maxlength="20" />
+              <p:outputLabel  value="Teléfono:"/>
+            <p:inputText value="#{pacBeanPaciente.paciente.telefonoPac}" required="true" requiredMessage="Ingrese el teléfono del Paciente!" maxlength="20" />
+              <p:outputLabel  value="Dirección:"/>
+            <p:inputText value="#{pacBeanPaciente.paciente.direccionPac}" required="true" requiredMessage="Ingrese la dirección del Paciente!" maxlength="100" />
+            <p:outputLabel  value="Foto:"/>
+       	<p:textEditor widgetVar="editPac" required="true"
+						requiredMessage="Ingrese la imagen"
+						placeholder="Ingrese una imagen"
+						value="#{pacBeanPaciente.paciente.fotoPac}"  height="200">
+						<f:facet name="toolbar">
+							<span class="ql-formats">
+								<button class="ql-image" style="margin-right: 20px;"
+									title="Cargar Imagen"></button>
+							</span>
+							<span class="ql-formats"> <h:commandButton type="button"
+									onclick="PF('editPac').clear();" title="Limpiar" />
+							</span>
+						</f:facet>
+					</p:textEditor>
+            
+       
+ </p:panelGrid>
+
+<p:panelGrid columns="2" layout="grid">
+			<p:commandButton value="GUARDAR" icon="fa fa-arrow-circle-right"
+				style="width:100%"
+				actionListener="#{pacBeanPaciente.actionListenerEditarPacienteByAdministrador()}"
+				onclick="PF('editarPaciente').hide();" update="form2" ajax="false">
+				</p:commandButton>
+			<p:button value="CANCELAR" style="width:100%" icon="fa fa-times" dismiss="modal" />
+	</p:panelGrid>
+	</div>
+		</h:form>
+	</p:dialog>
+	<p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+		<p:commandButton value="Sí" type="button"
+			styleClass="ui-confirmdialog-yes" icon="fa fa-check" />
+		<p:commandButton value="No" type="button"
+			styleClass="ui-confirmdialog-no" icon="fa fa-times" />
+	</p:confirmDialog>
+</body> 
+</html>

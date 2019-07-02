@@ -1,0 +1,408 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+	<style type="text/css">
+/** Demo **/
+.ui-outputlabel {
+	font-weight: bold;
+}
+
+.ui-orderlist .ui-orderlist-list {
+	height: auto;
+}
+</style>
+</h:head>
+<body>
+	<div id="menu">
+		<h:form>
+			<p:menubar>
+				<p:menuitem>
+					<p:graphicImage value="resources/images/logo1.png"></p:graphicImage>
+				</p:menuitem>
+				<p:menuitem value="ATRÁS" title="ATRÁS" icon="fa fa-arrow-left"
+					action="menu?faces-redirect=true" />
+				<p:menuitem value="Nuevo Médico" title="Ingresar Nuevo Médico"
+					icon=" fa fa-plus " onclick="PF('nuevoMedico').show();"></p:menuitem>
+				<p:menuitem value="Nueva Especialidad"
+					title="Ingresar Nueva Especialida" icon=" fa fa-plus "
+					onclick="PF('nuevaEspecialidad').show();"></p:menuitem>
+				<f:facet name="options">
+					<p:commandButton title="Datos de usuario" icon="fa fa-user"
+						value="#{authBeanLogin.login.nombres}" />
+					<p:commandButton title="Cerrar sesión" icon="fa fa-power-off"
+						action="#{authBeanLogin.actionCerrarSesion()}" />
+				</f:facet>
+			</p:menubar>
+		</h:form>
+	</div>
+	<p:growl>
+		<p:autoUpdate />
+	</p:growl>
+	<p:messages>
+		<p:autoUpdate />
+	</p:messages>
+
+
+	<p:dialog header="Ingresar nuevo médico" widgetVar="nuevoMedico"
+		id="nuevoMedico" modal="true" height="500" resizable="true"
+		responsive="true" minimizable="true" maximizable="true"
+		appendTo="@(body)">
+		<h:form id="form1">
+			<div class="ui-fluid">
+				<p:panelGrid columns="4" layout="grid">
+
+					<p:outputLabel value="Nombres:" />
+					<p:inputText value="#{medBeanMedico.nombres_med}" required="true"
+						requiredMessage="Ingrese los nombres del Paciente!"
+						maxlength="100" />
+					<p:outputLabel value="Apellidos:" />
+					<p:inputText value="#{medBeanMedico.apellidos_med}" required="true"
+						requiredMessage="Ingrese los apellidos del Paciente!"
+						maxlength="100" />
+					<p:outputLabel value="Correo:" />
+					<p:inputText value="#{medBeanMedico.correo_med}" required="true"
+						requiredMessage="Ingrese el correo del Paciente!" maxlength="50" />
+					<p:outputLabel value="Identificación:" />
+					<p:inputText value="#{medBeanMedico.identificacion_med}"
+						required="true" requiredMessage="Ingrese la Ci/Ruc del paciente!"
+						maxlength="20" />
+					<p:outputLabel value="Teléfono:" />
+					<p:inputText value="#{medBeanMedico.telefono_med}" required="true"
+						requiredMessage="Ingrese el teléfono del Paciente!" maxlength="20" />
+					<p:outputLabel value="Activo:" />
+					<p:selectOneMenu id="activo" value="#{medBeanMedico.activo_med}">
+						<f:selectItem itemLabel="ACTIVO" itemValue="true" />
+						<f:selectItem itemLabel="INACTIVO" itemValue="false" />
+
+					</p:selectOneMenu>
+					<p:outputLabel value="Especialidad:" />
+					<p:selectOneMenu id="especiali" autoWidth="100%" required="true"
+						requiredMessage="Seleccione una especialidad"
+						value="#{medBeanMedico.id_especialidad_fk}" effect="fade" var="m"
+						filter="true" filterMatchMode="startsWith">
+
+						<f:selectItem itemLabel="Select One" noSelectionOption="true" />
+						<f:selectItems value="#{medBeanMedico.listaEspecialidades}"
+							var="esp" itemLabel="#{esp.nombreEsp}"
+							itemValue="#{esp.idEspecialidad}" />
+					</p:selectOneMenu>
+					<p:outputLabel value="Rol:" />
+					<p:selectOneMenu id="rolEsp" autoWidth="100%" required="true"
+						requiredMessage="Seleccione un rol"
+						value="#{medBeanMedico.id_rol_fk}" effect="fade" var="m"
+						filter="true" filterMatchMode="startsWith">
+
+						<f:selectItem itemLabel="Select One" noSelectionOption="true" />
+						<f:selectItems value="#{medBeanMedico.listaRoles}" var="rol"
+							itemLabel="#{rol.nombreRol}" itemValue="#{rol.idRol}" />
+					</p:selectOneMenu>
+					<p:outputLabel value="Foto:" />
+					<p:textEditor widgetVar="editMed" required="true"
+						requiredMessage="Ingrese la imagen"
+						placeholder="Ingrese una imagen" value="#{medBeanMedico.foto_med}"
+						height="150">
+						<f:facet name="toolbar">
+							<span class="ql-formats">
+								<button class="ql-image" style="margin-right: 20px;"
+									title="Cargar Imagen"></button>
+							</span>
+							<span class="ql-formats"> <h:commandButton type="button"
+									onclick="PF('editMed').clear();" title="Limpiar" />
+							</span>
+						</f:facet>
+					</p:textEditor>
+
+
+				</p:panelGrid>
+				<p:panelGrid columns="2" layout="grid">
+					<p:commandButton value="INGRESAR" icon="fa fa-arrow-circle-right"
+						style="width:100%"
+						actionListener="#{medBeanMedico.actionListenerIngresarMedico()}"
+						oncomplete="nuevoMedico" update="@form" ajax="false">
+					</p:commandButton>
+					<p:button value="CANCELAR" style="width:100%" icon="fa fa-times"
+						dismiss="modal" />
+				</p:panelGrid>
+			</div>
+		</h:form>
+	</p:dialog>
+
+
+
+
+
+	<p:tabView dynamic="true" cache="true" effect="fold">
+		<p:tab title="Médico">
+
+
+
+			<h:form id="form2">
+				<div class="ui-fluid">
+
+					<p:dataTable var="med" widgetVar="tabla1"
+						value="#{medBeanMedico.listaMedicos}" reflow="true" rows="10"
+						paginator="true"
+						paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+						rowsPerPageTemplate="5,10,15">
+						<f:facet name="header">
+							<p:outputLabel value="Lista de Médicos"></p:outputLabel>
+						</f:facet>
+						<p:column headerText="Id" style="width:50px">
+							<h:outputText value="#{med.idMedico}" />
+						</p:column>
+
+						<p:column headerText="Nombres">
+							<h:outputText value="#{med.nombresMed}" />
+						</p:column>
+						<p:column headerText="ROl">
+							<h:outputText value="#{med.authUsuario.authRol.nombreRol}" />
+						</p:column>
+
+						<p:column headerText="Apellidos">
+							<h:outputText value="#{med.apellidosMed}" />
+						</p:column>
+						<p:column headerText="Identificación">
+							<h:outputText value="#{med.identificacionMed}" />
+						</p:column>
+						<p:column headerText="Activo" style="width:40px">
+							<h:outputText value="#{med.activoMed}" />
+						</p:column>
+						<p:column headerText="Foto" style="width:100px">
+
+							<p:textEditor value="#{med.fotoMed}" readonly="true">
+								<f:facet name="toolbar">
+									<span> </span>
+								</f:facet>
+							</p:textEditor>
+
+						</p:column>
+						<p:column headerText="Correo" style="width:150px">
+							<h:outputText value="#{med.correoMed}" />
+						</p:column>
+						<p:column headerText="Teléfono">
+							<h:outputText value="#{med.telefonoMed}" />
+						</p:column>
+						<p:column headerText="Especialidad">
+							<h:outputText value="#{med.medEspecialidad.nombreEsp}" />
+						</p:column>
+						<p:column headerText="OPCIONES" style="width:90px" priority="1">
+							<p:commandButton icon="fa fa-pencil"
+								actionListener="#{medBeanMedico.actionListenerCargarMedMedico(med)}"
+								onclick="PF('editarMedico').show();" title="Editar"
+								update="@form"></p:commandButton>
+							<p:commandButton update="@form"
+								style="border:#FC1F0D;background-color:#FC1F0D" title="Eliminar"
+								icon="fa fa-times">
+								<p:confirm header="Confirmación" message="Desea eliminar?"
+									icon="fa fa-times" />
+							</p:commandButton>
+
+
+						</p:column>
+
+					</p:dataTable>
+				</div>
+			</h:form>
+		</p:tab>
+		<p:tab title="Especialidad" id="especialidad">
+			<h:form id="form4">
+				<p:dataTable var="esp" widgetVar="tabla4" id="tabla4"
+					value="#{medBeanMedico.listaEspecialidades}" reflow="true"
+					rows="10" paginator="true"
+					paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+					rowsPerPageTemplate="5,10,15">
+					<f:facet name="header">
+						<p:outputLabel value="Lista de Especialidades"></p:outputLabel>
+					</f:facet>
+					<p:column headerText="Id">
+						<h:outputText value="#{esp.idEspecialidad}" />
+					</p:column>
+
+					<p:column headerText="Nombre">
+						<h:outputText value="#{esp.nombreEsp}" />
+					</p:column>
+
+					<p:column headerText="Activo">
+						<h:outputText value="#{esp.activoEsp}" />
+					</p:column>
+
+
+
+					<p:column headerText="OPCIONES" style="width:90px">
+						<p:commandButton icon="fa fa-pencil"
+							onclick="PF('dlgEditEsp').show();"
+							actionListener="#{medBeanMedico.actionListenerCargarMedEspecialidad(esp)}"
+							title="Editar" update="form12"></p:commandButton>
+
+						<p:commandButton update="@form"
+							actionListener="#{medBeanMedico.actionListenerEliminarEspecialidad(esp.idEspecialidad)}"
+							style="border:#FC1F0D;background-color:#FC1F0D" title="Eliminar"
+							icon="fa fa-times">
+							<p:confirm header="Confirmación" message="Desea eliminar?"
+								icon="fa fa-times" />
+						</p:commandButton>
+
+					</p:column>
+				</p:dataTable>
+			</h:form>
+		</p:tab>
+	</p:tabView>
+
+
+
+
+
+	<p:dialog header="Editar Especialidad" modal="true" responsive="true"
+		appendTo="@(body)" widgetVar="dlgEditEsp" minimizable="true"
+		maximizable="true" height="210">
+		<h:form id="form12">
+			<div class="ui-fluid">
+				<p:panelGrid columns="2" layout="grid">
+					<h:outputText value="Id: " />
+					<p:inputText
+						value="#{medBeanMedico.medEspecialidad.idEspecialidad}"
+						disabled="true" />
+					<h:outputText value="Nombre: " />
+					<p:inputText value="#{medBeanMedico.medEspecialidad.nombreEsp}"
+						required="true" requiredMessage="Ingrese un nombre!" />
+					<h:outputText value="Activo: " />
+					<p:selectOneMenu id="activo_esp"
+						value="#{medBeanMedico.medEspecialidad.activoEsp}">
+						<f:selectItem itemLabel="ACTIVO" itemValue="true" />
+						<f:selectItem itemLabel="INACTIVO" itemValue="false" />
+
+					</p:selectOneMenu>
+					<p:commandButton value="GUARDAR" icon="fa fa-save"
+						actionListener="#{medBeanMedico.actionListenerEditarMedEspecialidad()}"
+						onclick="PF('dlgEditEsp').hide();" update="form4" ajax="false"></p:commandButton>
+					<p:button value="CANCELAR" icon="fa fa-times" dismiss="modal" />
+				</p:panelGrid>
+			</div>
+		</h:form>
+
+	</p:dialog>
+	<p:dialog header="Ingresar Especialidad" modal="true" responsive="true"
+		appendTo="@(body)" widgetVar="nuevaEspecialidad" minimizable="true"
+		maximizable="true" height="160">
+		<h:form id="form11">
+			<div class="ui-fluid">
+				<p:panelGrid columns="2" layout="grid">
+					<h:outputText value="Nombre: " />
+					<p:inputText value="#{medBeanMedico.nombre_esp}" />
+					<h:outputText value="Activo: " />
+					<p:selectOneMenu id="activo_esp"
+						value="#{medBeanMedico.activo_esp}">
+						<f:selectItem itemLabel="ACTIVO" itemValue="true" />
+						<f:selectItem itemLabel="INACTIVO" itemValue="false" />
+
+					</p:selectOneMenu>
+					<p:commandButton value="INGRESAR" icon="fa fa-arrow-circle-right"
+						actionListener="#{medBeanMedico.actionListenerIngresarEspecialidad()}"
+						oncomplete="nuevaEspecialidad" update="form4" ajax="false"></p:commandButton>
+					<p:button value="CANCELAR" icon="fa fa-times" dismiss="modal" />
+				</p:panelGrid>
+			</div>
+		</h:form>
+
+	</p:dialog>
+	<p:dialog header="Editar médico" widgetVar="editarMedico"
+		id="editarMedico" modal="true" height="500" resizable="true"
+		responsive="true" minimizable="true" maximizable="true"
+		appendTo="@(body)">
+		<h:form id="form14">
+				<p:panelGrid columns="4" layout="grid">
+					<p:outputLabel value="Id:" />
+					<p:inputText value="#{medBeanMedico.medMedico.idMedico}"
+						disabled="true" />
+
+					<p:outputLabel value="Nombres:" />
+					<p:inputText value="#{medBeanMedico.medMedico.nombresMed}"
+						required="true"
+						requiredMessage="Ingrese los nombres del Paciente!"
+						maxlength="100" />
+					<p:outputLabel value="Apellidos:" />
+					<p:inputText value="#{medBeanMedico.medMedico.apellidosMed}"
+						required="true"
+						requiredMessage="Ingrese los apellidos del Paciente!"
+						maxlength="100" />
+					<p:outputLabel value="Correo:" />
+					<p:inputText value="#{medBeanMedico.medMedico.correoMed}"
+						required="true" requiredMessage="Ingrese el correo del Paciente!"
+						maxlength="50" />
+					<p:outputLabel value="Identificación:" />
+					<p:inputText value="#{medBeanMedico.medMedico.identificacionMed}"
+						required="true" requiredMessage="Ingrese la Ci/Ruc del paciente!"
+						maxlength="20" />
+					<p:outputLabel value="Teléfono:" />
+					<p:inputText value="#{medBeanMedico.medMedico.telefonoMed}"
+						required="true"
+						requiredMessage="Ingrese el teléfono del Paciente!" maxlength="20" />
+					<p:outputLabel value="Activo:" />
+					<p:selectOneMenu id="activo"
+						value="#{medBeanMedico.medMedico.activoMed}">
+						<f:selectItem itemLabel="ACTIVO" itemValue="true" />
+						<f:selectItem itemLabel="INACTIVO" itemValue="false" />
+
+					</p:selectOneMenu>
+					<p:outputLabel value="Especialidad:" />
+					<p:selectOneMenu id="especiali" autoWidth="100%" required="true"
+						requiredMessage="Seleccione una especialidad"
+						value="#{medBeanMedico.id_especialidad_fk}" effect="fade" var="m"
+						filter="true" filterMatchMode="startsWith">
+						<f:selectItems value="#{medBeanMedico.listaEspecialidades}"
+							var="esp" itemLabel="#{esp.nombreEsp}"
+							itemValue="#{esp.idEspecialidad}" />
+					</p:selectOneMenu>
+					<p:outputLabel value="Rol:" />
+					<p:selectOneMenu id="rolEsp" autoWidth="100%" required="true"
+						requiredMessage="Seleccione un rol"
+						value="#{medBeanMedico.id_rol_fk}" effect="fade" var="m"
+						filter="true" filterMatchMode="startsWith">
+
+						<f:selectItems value="#{medBeanMedico.listaRoles}" var="rol"
+							itemLabel="#{rol.nombreRol}" itemValue="#{rol.idRol}" />
+					</p:selectOneMenu>
+					<p:outputLabel value="Foto:" />
+					<p:textEditor widgetVar="editMed" required="true"
+						requiredMessage="Ingrese la imagen"
+						placeholder="Ingrese una imagen"
+						value="#{medBeanMedico.medMedico.fotoMed}" height="150">
+						<f:facet name="toolbar">
+							<span class="ql-formats">
+								<button class="ql-image" style="margin-right: 20px;"
+									title="Cargar Imagen"></button>
+							</span>
+							<span class="ql-formats"> <h:commandButton type="button"
+									onclick="PF('editMed').clear();" title="Limpiar" />
+							</span>
+						</f:facet>
+					</p:textEditor>
+
+
+				</p:panelGrid>
+				<p:panelGrid columns="2" layout="grid">
+					<p:commandButton value="GUARDAR" icon="fa fa-arrow-circle-right"
+						style="width:100%"
+						actionListener="#{medBeanMedico.actionListenerEditarMedMedico()}"
+						onclick="PF('editarMedico').hide();" update="@form" ajax="false">
+					</p:commandButton>
+					<p:button value="CANCELAR" style="width:100%" icon="fa fa-times"
+						dismiss="modal" />
+				</p:panelGrid>
+
+		</h:form>
+	</p:dialog>
+	<p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+		<p:commandButton value="Sí" type="button"
+			styleClass="ui-confirmdialog-yes" icon="fa fa-check" />
+		<p:commandButton value="No" type="button"
+			styleClass="ui-confirmdialog-no" icon="fa fa-times" />
+	</p:confirmDialog>
+
+</body>
+</html>
