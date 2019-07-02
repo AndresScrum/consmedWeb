@@ -87,18 +87,21 @@
 				<h:panelGrid columns="2" cellpadding="5">
 					
 					 <p:outputLabel for="hora2" value="Seleccione hora:" />
-					<p:selectOneMenu id="hora2" value="#{reserBeanCita.horaSelect}" 	style="width:125px">
-						<f:selectItem itemLabel="Select One" itemValue="" />
-            <f:selectItems value="#{reserBeanCita.listHorasDispo}" />
-					</p:selectOneMenu> 
-					<p:outputLabel for="sintoma" value="Ingrese sintoma" />
-					<p:inputTextarea id="sintoma" value="#{reserBeanCita.sintoma}"
-						rows="6" cols="33" required="true"
-						requiredMessage="Ingrese sintoma !" />
+					<p:selectOneMenu id="hora2" value="#{reserBeanCita.horaSelect}" 	autoWidth="100%" required="true"
+						requiredMessage="Seleccione una hora" effect="fade" filter="true" filterMatchMode="startsWith" >
+					<f:selectItem itemLabel="Seleccione una hora" noSelectionOption="true" />
+						<f:selectItems value="#{reserBeanCita.listHoras}"
+							var="h" itemLabel="#{h.hora}"
+							itemValue="#{h.time}" />
+					</p:selectOneMenu>					
 					<p:outputLabel for="asunto" value="Ingrese asunto" />
 					<p:inputTextarea id="asunto" value="#{reserBeanCita.asunto}"
 						rows="6" cols="33" required="true"
 						requiredMessage="Ingrese asunto !" />
+						<p:outputLabel for="sintoma" value="Ingrese sintoma" />
+					<p:inputTextarea id="sintoma" value="#{reserBeanCita.sintoma}"
+						rows="6" cols="33" required="true"
+						requiredMessage="Ingrese sintoma !" />
 				</h:panelGrid>
 				<p:commandButton value="Reservar cita"
 					action="#{reserBeanCita.actionReservar(authBeanLogin.login.id_usuario)}" oncomplete="PF('mReserva').hide();" update="@form"  />

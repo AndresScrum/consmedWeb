@@ -39,6 +39,7 @@ public class ReserBeanCita implements Serializable {
 	private ReserCita cita;
 	private List<ReserCita> listCitasMedico;
 	private Map<String,String> listHorasDispo = new HashMap<String, String>();
+	private List<HorasDisponibles> listHoras=new ArrayList<HorasDisponibles>();
 	
 	private boolean showDatosCita;
 	
@@ -79,6 +80,7 @@ public class ReserBeanCita implements Serializable {
 				System.out.println("No se seleccionó la fecha de hoy");
 			}
 			listHorasDispo.clear();
+				listHoras.clear();
 		this.listCitasMedico=reserManagerCita.findCitaByDocFecha(idMedico, fecha);
 		System.out.println(listCitasMedico);
 		System.out.println(idMedico);
@@ -101,8 +103,10 @@ public class ReserBeanCita implements Serializable {
 				aux=cont+":00:00";
 			}
 			if(!existeHora(aux))	{
-				//HorasDisponibles hd=new HorasDisponibles(hora,String.valueOf(cont));			
-				listHorasDispo.put(hora, String.valueOf(cont));
+				HorasDisponibles hd=new HorasDisponibles(hora,String.valueOf(cont));
+				System.out.println("add");
+				listHoras.add(hd);
+				//listHorasDispo.put(hora, String.valueOf(cont));
 			}
 			cont++;
 		}
@@ -110,8 +114,7 @@ public class ReserBeanCita implements Serializable {
 			
 		}
 		
-		if(listHorasDispo.size()>0) {
-			
+		if(listHoras.size()>0) {			
 			System.out.println("Muestra datos");
 			setShowDatosCita(false);
 		}else {
@@ -257,6 +260,14 @@ public class ReserBeanCita implements Serializable {
 
 	public void setListHorasDispo(Map<String, String> listHorasDispo) {
 		this.listHorasDispo = listHorasDispo;
+	}
+
+	public List<HorasDisponibles> getListHoras() {
+		return listHoras;
+	}
+
+	public void setListHoras(List<HorasDisponibles> listHoras) {
+		this.listHoras = listHoras;
 	}
 
 	
