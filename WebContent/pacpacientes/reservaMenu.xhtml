@@ -1,0 +1,45 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui">
+
+<h:head></h:head>
+<body>
+	<div id="menu">
+		<h:form>
+		<p:growl id="messages" showDetail="true" />
+			<p:menubar>
+				<p:menuitem>
+					<p:graphicImage value="resources/images/logo1.png"></p:graphicImage>
+				</p:menuitem>
+				<p:menuitem value="Atrás" action="menu?faces-redirect=true"
+					icon="pi pi-calendar-plus" />
+					<p:menuitem value="Reservas pendientes"
+					action="#{reserBeanCita.actionGetCitasNoPagadosPac()}" icon="fa fa-clock-o" />
+				<p:menuitem value="Reservar cita"
+					action="reserva?faces-redirect=true" icon="fa fa-clock-o" />
+
+				<f:facet name="options">
+					<p:menuButton value="#{authBeanLogin.login.nombres}"
+						title="Opciones del Paciente" icon="fa fa-user">
+						<p:menuitem style="width:165%;background: #f4f6f6 "
+							value="Editar Perfil" icon="fa fa-edit"></p:menuitem>
+					</p:menuButton>
+
+					<p:commandButton title="Cerrar sesión" icon="fa fa-power-off"
+						action="#{authBeanLogin.actionCerrarSesion()}" />
+				</f:facet>
+			</p:menubar>
+		</h:form>
+	</div>
+	<div align="center">
+		<p:panel header="Reservas pendientes">
+		<p:dataGrid var="med" value="#{reserBeanCita.listCitasNoPagado}">
+		<h:outputText value="#{med.asuntoReser}" />
+		</p:dataGrid>
+		</p:panel>
+	</div>
+</body>
+</html>

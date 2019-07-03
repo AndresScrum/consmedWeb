@@ -21,6 +21,7 @@ import consmed.core.model.entities.PacPaciente;
 import consmed.core.model.entities.ReserCita;
 import consmed.modulos.pacpaciente.model.PacManagerPaciente;
 import consmed.modulos.resercita.model.ReserManagerCita;
+import consmed.modulos.segauditoria.model.SegManagerAuditoria;
 import consmed.modulos.view.util.JSFUtil;
 
 @Named
@@ -38,6 +39,8 @@ public class ReserBeanCita implements Serializable {
 	private String sintoma;
 	private ReserCita cita;
 	private List<ReserCita> listCitasMedico;
+	private List<ReserCita> listCitasPagado;	
+	private List<ReserCita> listCitasNoPagado;
 	private Map<String,String> listHorasDispo = new HashMap<String, String>();
 	private List<HorasDisponibles> listHoras=new ArrayList<HorasDisponibles>();
 	
@@ -47,17 +50,23 @@ public class ReserBeanCita implements Serializable {
 	private ReserManagerCita reserManagerCita;
 	@EJB
 	private PacManagerPaciente pacManagerPaciente;
+	@EJB
+	private SegManagerAuditoria segManagerAuditoria;
 	
 	@PostConstruct
 	public void init() {
-		System.out.println("Init()");
+		System.out.println("Init Reserv()");
 		minFecha=new Date();
 		setShowDatosCita(true);
 		 listHorasDispo= new HashMap<String, String>();
+		 
 			
 		
 	}
-	
+	public String irMenuReservas(int idUsuario) {
+		setIdUsuario(idUsuario);
+		return "reservaMenu";
+	}
 	public String actionListerSetIdMedico(MedMedico medMedico) {
 		setMedMedico(medMedico);
 		setIdMedico(medMedico.getIdMedico());
@@ -152,12 +161,13 @@ public class ReserBeanCita implements Serializable {
 		@SuppressWarnings("deprecation")
 		Time ti=new Time(hora, 0, 0);
 		reserManagerCita.ingresarReserCita(pacPaciente, medMedico, fecha, ti, asunto, sintoma);		
+		segManagerAuditoria.ingresarBitacora(idUsuario, "ingresarReserCita","Paciente crea una reserva de la cita");
 		JSFUtil.crearMensajeInfo("Reserva exitosa");
 
 		}catch(Exception e) {
 			JSFUtil.crearMensajeError("Hubo un error");
 		}
-		return "menu";
+		return "reservaMenu";
 	}
 	
 	public PacPaciente getIdPaciente(int idUsuario) {
@@ -172,7 +182,16 @@ public class ReserBeanCita implements Serializable {
 	}
 	
 
-	
+	public String actionGetCitasNoPagadosPac(int idUsuario) {
+		PacPaciente pac=getIdPaciente(idUsuario);
+		try {
+			listCitasNoPagado=reserManagerCita.findCitaNoPagadoByPaciente(pac.getIdPaciente());
+			System.out.println("ListcitasnoPagado: "+listCitasNoPagado.size());
+		} catch (ParseException e) {
+			JSFUtil.crearMensajeError("Hubo un error");
+		}
+		return "reservaMenu";
+	}
 
 	
 
@@ -270,6 +289,23 @@ public class ReserBeanCita implements Serializable {
 		this.listHoras = listHoras;
 	}
 
+	public List<ReserCita> getListCitasPagado() {
+		return listCitasPagado;
+	}
+
+	public void setListCitasPagado(List<ReserCita> listCitasPagado) {
+		this.listCitasPagado = listCitasPagado;
+	}
+
+	public List<ReserCita> getListCitasNoPagado() {
+		return listCitasNoPagado;
+	}
+
+	public void setListCitasNoPagado(List<ReserCita> listCitasNoPagado) {
+		this.listCitasNoPagado = listCitasNoPagado;
+	}
+
+	
 	
 	
 }

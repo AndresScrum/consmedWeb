@@ -48,8 +48,8 @@
 				<p:menuitem>
 					<p:graphicImage value="resources/images/logo1.png"></p:graphicImage>
 				</p:menuitem>
-				<p:menuitem value="Reservar cita"
-					action="reserva?faces-redirect=true" icon="fa fa-calendar" />
+				<p:menuitem value="Reservas" action="#{reserBeanCita.actionGetCitasNoPagadosPac(authBeanLogin.login.id_usuario)}"
+					 icon="pi pi-calendar-plus" />
 
 				<f:facet name="options">
 					<p:menuButton value="#{authBeanLogin.login.nombres}"

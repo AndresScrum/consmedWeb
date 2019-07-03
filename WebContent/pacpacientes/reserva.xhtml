@@ -6,6 +6,7 @@
 	xmlns:p="http://primefaces.org/ui">
 
 <h:head>
+
 </h:head>
 
 <body>
@@ -18,8 +19,8 @@
 				<p:menuitem>
 					<p:graphicImage value="resources/images/logo1.png"></p:graphicImage>
 				</p:menuitem>
-				<p:menuitem value="Atrás" action="menu?faces-redirect=true"
-					icon="fa fa-calendar" />
+				<p:menuitem value="Atrás" action="reservaMenu?faces-redirect=true"
+					icon="fa fa-clock-o" />
 
 				<f:facet name="options">
 					<p:menuButton value="#{authBeanLogin.login.nombres}"
@@ -33,9 +34,12 @@
 				</f:facet>
 			</p:menubar>
 		</h:form>
-	</div>
-	<div>
-		Listado de doctores
+	</div>	
+	<div  align="center">
+	<p:panel header="Reservar una cita">
+		<div align="center">
+						<h1>Doctores</h1>
+					</div>
 		<h:form>
 			<p:growl id="msgs" showDetail="true" />
 			<p:dataGrid var="med" value="#{medBeanMedico.listaMedicos}">
@@ -50,7 +54,7 @@
 						</p:textEditor>
 						<h:outputText
 							value="Especialidad: #{med.medEspecialidad.nombreEsp}" />
-						<p:commandButton value="Reservar cita"
+						<p:commandButton value="Reservar cita" style="buttonReservar"
 							action="#{reserBeanCita.actionListerSetIdMedico(med)}"
 							oncomplete="PF('mReserva').show();" />
 					</h:panelGrid>
@@ -58,8 +62,9 @@
 				</p:panel>
 			</p:dataGrid>
 		</h:form>
+		
+</p:panel>
 	</div>
-
 	<p:dialog header="Reservar cita" widgetVar="mReserva" id="dialog"
 		modal="true" height="450" width="600" responsive="true"
 		appendTo="@(body)">
@@ -70,7 +75,8 @@
 			<h:panelGrid columns="3" cellpadding="5">
 				<p:outputLabel for="fecha" value="Fecha:" />
 				<p:calendar id="fecha" value="#{reserBeanCita.fecha}"
-					showOn="button" mindate="#{reserBeanCita.minFecha}" />
+					showOn="button" mindate="#{reserBeanCita.minFecha}" required="true"
+						requiredMessage="Seleccione un día" />
 
 				<p:commandButton update=":dataHora"
 					action="#{reserBeanCita.setHorasDisponibles()}"
