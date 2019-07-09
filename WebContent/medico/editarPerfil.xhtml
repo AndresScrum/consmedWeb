@@ -1,0 +1,109 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui">
+<f:metadata>
+<f:event listener="#{authBeanLogin.actionComprobarSessionLogin()}"
+type="preRenderView"></f:event>
+</f:metadata>
+<h:head>
+	<style type="text/css">
+/** Demo **/
+.ui-outputlabel {
+	font-weight: bold;
+}
+
+.ui-orderlist .ui-orderlist-list {
+	height: auto;
+}
+</style>
+</h:head>
+<body>
+	<div id="menu">
+		<h:form>
+			<p:menubar>
+				<p:menuitem>
+					<p:graphicImage value="resources/images/logo1.png"></p:graphicImage>
+				</p:menuitem>
+				<p:menuitem value="ATRÁS" title="ATRÁS" icon="fa fa-arrow-left"
+					action="menu?faces-redirect=true" />
+			<f:facet name="options">
+					<p:commandButton title="Datos de usuario" icon="fa fa-user"
+						value="#{authBeanLogin.login.nombres}" />
+					<p:commandButton title="Cerrar sesión" icon="fa fa-power-off"
+						action="#{authBeanLogin.actionCerrarSesion()}" />
+				</f:facet>
+			</p:menubar>
+		</h:form>
+	</div>
+	<p:growl>
+		<p:autoUpdate />
+	</p:growl>
+	<p:messages>
+		<p:autoUpdate />
+	</p:messages>
+
+<div align="center">
+
+		<h:form id="form1">
+				<p:panelGrid columns="2" >
+<f:facet name="header">
+					<p:textEditor widgetVar="editMed" required="true"
+						requiredMessage="Ingrese la imagen"
+						placeholder="Ingrese una imagen" value="#{authBeanLogin.editarmed.fotoMed}"
+						height="200">
+						<f:facet name="toolbar">
+							<span class="ql-formats">
+								<button class="ql-image" style="margin-right: 20px;"
+									title="Cargar Imagen"></button>
+							</span>
+							<span class="ql-formats"> <h:commandButton type="button"
+									onclick="PF('editMed').clear();" title="Limpiar" />
+							</span>
+						</f:facet>
+					</p:textEditor></f:facet>
+					<p:outputLabel value="Nombres:" />
+					<p:inputText value="#{authBeanLogin.editarmed.nombresMed}" required="true"
+						requiredMessage="Ingrese los nombres del Paciente!"
+						maxlength="100" />
+					<p:outputLabel value="Apellidos:" />
+					<p:inputText value="#{authBeanLogin.editarmed.apellidosMed}" required="true"
+						requiredMessage="Ingrese los apellidos del Paciente!"
+						maxlength="100" />
+					<p:outputLabel value="Correo:" />
+					<p:inputText value="#{authBeanLogin.editarmed.correoMed}" required="true"
+						requiredMessage="Ingrese el correo del Paciente!" maxlength="50" />
+					<p:outputLabel value="Identificación:" />
+					<p:inputText value="#{authBeanLogin.editarmed.identificacionMed}"
+						required="true" requiredMessage="Ingrese la Ci/Ruc del paciente!"
+						maxlength="20" />
+					<p:outputLabel value="Teléfono:" />
+					<p:inputText value="#{authBeanLogin.editarmed.telefonoMed}" required="true"
+						requiredMessage="Ingrese el teléfono del Paciente!" maxlength="20" />
+					
+					<p:outputLabel value="Especialidad:" />
+					<p:selectOneMenu id="especiali" autoWidth="100%" required="true"
+						requiredMessage="Seleccione una especialidad"
+						value="#{medBeanMedico.id_especialidad_fk}" effect="fade" var="m"
+						filter="true" filterMatchMode="startsWith">
+
+						<f:selectItems value="#{medBeanMedico.listaEspecialidades}"
+							var="esp" itemLabel="#{esp.nombreEsp}"
+							itemValue="#{esp.idEspecialidad}" />
+					</p:selectOneMenu>
+
+					<p:commandButton value="INGRESAR" icon="fa fa-arrow-circle-right"
+						style="width:100%"
+						actionListener="#{medBeanMedico.editarMedicoPerfil()}"
+						oncomplete="nuevoMedico" update="@form" ajax="false">
+					</p:commandButton>
+					<p:button value="CANCELAR" style="width:100%" icon="fa fa-times"
+						dismiss="modal" />
+				</p:panelGrid>
+
+		</h:form>
+</div>
+</body>
+</html>

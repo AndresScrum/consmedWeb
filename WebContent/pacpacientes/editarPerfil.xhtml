@@ -1,0 +1,106 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui">
+
+<f:metadata>
+	<f:event listener="#{authBeanLogin.actionComprobarSessionLogin()}"
+		type="preRenderView"></f:event>
+</f:metadata>
+<h:head>
+	<style type="text/css">
+/** Demo **/
+.ui-outputlabel {
+	font-weight: bold;
+}
+
+.ui-orderlist .ui-orderlist-list {
+	height: auto;
+}
+</style>
+</h:head>
+<body>
+	<div id="menu">
+		<h:form>
+			<p:menubar>
+				<p:menuitem>
+					<p:graphicImage value="resources/images/logo1.png"></p:graphicImage>
+				</p:menuitem>
+				<p:menuitem value="ATRÁS" title="ATRÁS" icon="fa fa-arrow-left"
+					action="menu?faces-redirect=true" />
+<f:facet name="options">
+					<p:commandButton title="Datos de usuario" icon="fa fa-user"
+						value="#{authBeanLogin.login.nombres}" />
+					<p:commandButton title="Cerrar sesión" icon="fa fa-power-off"
+						action="#{authBeanLogin.actionCerrarSesion()}" />
+				</f:facet>
+			</p:menubar>
+		</h:form>
+	</div>
+	<p:growl>
+		<p:autoUpdate />
+	</p:growl>
+	<p:messages>
+		<p:autoUpdate />
+	</p:messages>
+	<div align="center">
+		<h2>Bienvenido Paciente</h2>
+
+		<h:form>
+
+			<p:panelGrid columns="2">
+				<f:facet name="header">
+					<p:textEditor widgetVar="ingPac" required="true"
+						requiredMessage="Ingrese la imagen"
+						placeholder="Ingrese una imagen"
+						value="#{authBeanLogin.editarpac.fotoPac}" height="150">
+						<f:facet name="toolbar">
+							<span class="ql-formats">
+							
+							</span>
+							<span class="ql-formats"> </span>
+						</f:facet>
+					</p:textEditor>
+				</f:facet>
+			
+					<p:outputLabel value="Nombres:" />
+
+					<p:inputText value="#{authBeanLogin.editarpac.nombresPac}" required="true"
+						requiredMessage="Ingrese los nombres del Paciente!"
+						maxlength="100" />
+				<p:outputLabel value="Apellidos:" />
+				<p:inputText value="#{authBeanLogin.editarpac.apellidosPac}"
+					required="true"
+					requiredMessage="Ingrese los apellidos del Paciente!"
+					maxlength="100" />
+				<p:outputLabel value="Correo:" />
+				<p:inputText value="#{authBeanLogin.editarpac.correoPac}" required="true"
+					requiredMessage="Ingrese el correo del Paciente!" maxlength="50" />
+				<p:outputLabel value="Identificación:" />
+				<p:inputText value="#{authBeanLogin.editarpac.identificacion}"
+					required="true" requiredMessage="Ingrese la Ci/Ruc del paciente!"
+					maxlength="20" />
+				<p:outputLabel value="Teléfono:" />
+				<p:inputText value="#{authBeanLogin.editarpac.telefonoPac}" required="true"
+					requiredMessage="Ingrese el teléfono del Paciente!" maxlength="20" />
+				<p:outputLabel value="Dirección:" />
+				<p:inputText value="#{authBeanLogin.editarpac.direccionPac}"
+					required="true"
+					requiredMessage="Ingrese la dirección del Paciente!"
+					maxlength="100" />
+
+			</p:panelGrid>
+
+			<p:panelGrid columns="1" layout="grid">
+				<p:commandButton value="ACTUALIZAR DATOS" icon="fa fa-arrow-circle-right"
+					actionListener="#{pacBeanPaciente.actionListenerEditarPacientePerfil()}"
+					oncomplete="nuevaOpcion" update="@form,:form2:tabla1" ajax="false"></p:commandButton>
+
+			</p:panelGrid>
+
+		</h:form>
+	</div>
+</body>
+</html>
