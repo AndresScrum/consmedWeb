@@ -83,9 +83,8 @@
 										style="font-weight: bold" />
 								</h:panelGrid>
 							</p:outputPanel>
-							<p:commandButton value="Detalles" icon="fa fa-align-left"
-								
-								oncomplete="PF('citaDialog').show()" title="ver detalles">
+							<p:commandButton value="Atender" icon="fa fa-align-left"								
+								oncomplete="PF('citaDialog').show()" title="Atender">
 								<f:setPropertyActionListener value="#{cita}"
 									target="#{reserBeanCita.selectedCita}" />
 							</p:commandButton>
