@@ -19,8 +19,8 @@
 				<p:menuitem>
 					<p:graphicImage value="resources/images/logo1.png"></p:graphicImage>
 				</p:menuitem>
-				<p:menuitem value="Atrás" action="reservaMenu?faces-redirect=true"
-					icon="fa fa-clock-o" />
+				<p:menuitem value="Menú reservas" action="reservaMenu?faces-redirect=true"
+					icon="fa fa-table" />
 
 				<f:facet name="options">
 					<p:menuButton value="#{authBeanLogin.login.nombres}"
@@ -42,7 +42,9 @@
 					</div>
 		<h:form>
 			<p:growl id="msgs" showDetail="true" />
-			<p:dataGrid var="med" value="#{medBeanMedico.listaMedicos}">
+			<p:dataGrid var="med" value="#{medBeanMedico.listaMedicos}"  rows="12" paginator="true" 
+        paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+        rowsPerPageTemplate="6,12,16">
 				<p:panel id="basic" header="#{med.nombresMed} #{med.apellidosMed}"
 					style="margin-bottom:20px">
 					<h:panelGrid columns="2" cellpadding="10">
@@ -104,10 +106,10 @@
 					<p:inputTextarea id="asunto" value="#{reserBeanCita.asunto}"
 						rows="6" cols="33" required="true"
 						requiredMessage="Ingrese asunto !" />
-						<p:outputLabel for="sintoma" value="Ingrese sintoma" />
+						<p:outputLabel for="sintoma" value="Ingrese síntoma" />
 					<p:inputTextarea id="sintoma" value="#{reserBeanCita.sintoma}"
 						rows="6" cols="33" required="true"
-						requiredMessage="Ingrese sintoma !" />
+						requiredMessage="Ingrese síntoma !" />
 				</h:panelGrid>
 				<p:commandButton value="Reservar cita"
 					action="#{reserBeanCita.actionReservar(authBeanLogin.login.id_usuario)}" oncomplete="PF('mReserva').hide();" update="@form"  />

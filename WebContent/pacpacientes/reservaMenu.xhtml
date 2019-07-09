@@ -5,19 +5,38 @@
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:p="http://primefaces.org/ui">
 
-<h:head></h:head>
+<h:head>
+	<style type="text/css">
+/*demo*/
+.ui-dataview-list .ui-dataview-row {
+	border-bottom: 1px solid #A8A8A8;
+	padding: 25px 10px;
+	/* with the exported variables from Nova and Luna Themes*/
+	border-bottom-color: var(- -input-border-color, #A8A8A8);
+}
+
+.logo {
+	width: 5%;
+}
+
+.detail {
+	width: 85%;
+	padding-left: 25px;
+}
+</style>
+</h:head>
 <body>
 	<div id="menu">
 		<h:form>
-		<p:growl id="messages" showDetail="true" />
+			<p:growl id="messages" showDetail="true" />
 			<p:menubar>
 				<p:menuitem>
 					<p:graphicImage value="resources/images/logo1.png"></p:graphicImage>
 				</p:menuitem>
-				<p:menuitem value="Atrás" action="menu?faces-redirect=true"
+				<p:menuitem value="Menú paciente" action="menu?faces-redirect=true"
 					icon="pi pi-calendar-plus" />
-					<p:menuitem value="Reservas pendientes"
-					action="#{reserBeanCita.actionGetCitasNoPagadosPac()}" icon="fa fa-clock-o" />
+				<p:menuitem value="Reservas pendientes"
+					action="reservaMenu?faces-redirect=true" icon="fa fa-table" />
 				<p:menuitem value="Reservar cita"
 					action="reserva?faces-redirect=true" icon="fa fa-clock-o" />
 
@@ -36,9 +55,89 @@
 	</div>
 	<div align="center">
 		<p:panel header="Reservas pendientes">
-		<p:dataGrid var="med" value="#{reserBeanCita.listCitasNoPagado}">
-		<h:outputText value="#{med.asuntoReser}" />
-		</p:dataGrid>
+			<h:form id="formCitas">
+				<p:dataGrid var="cita" value="#{reserBeanCita.listCitasNoPagado}"
+					rows="6" paginator="true" rowsPerPageTemplate="6,12,16"
+					paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+					gridIcon="pi pi-th-large" listIcon="pi pi-bars">
+					<p:dataViewListItem>
+						<h:panelGrid columns="1" style="width:100%">
+							<p:outputPanel>
+								<h:panelGrid columns="2" cellpadding="5">
+									<h:outputText value="Asunto:" />
+									<h:outputText value="#{cita.asuntoReser}"
+										style="font-weight: bold" />
+
+
+									<h:outputText value="Fecha:" />
+									<h:outputText value="#{cita.fechaReser}"
+										style="font-weight: bold" />
+
+									<h:outputText value="Hora:" />
+									<h:outputText value="#{cita.horaReser}"
+										style="font-weight: bold" />
+
+									<h:outputText value="Doctor:" />
+									<h:outputText
+										value="#{cita.medMedico.nombresMed} #{cita.medMedico.apellidosMed}"
+										style="font-weight: bold" />
+								</h:panelGrid>
+							</p:outputPanel>
+							<p:commandButton value="Detalles" icon="fa fa-align-left"
+								update=":formCitas:citaDetail"
+								oncomplete="PF('citaDialog').show()" title="ver detalles">
+								<f:setPropertyActionListener value="#{cita}"
+									target="#{reserBeanCita.selectedCita}" />
+							</p:commandButton>
+							<p:commandButton value="Cancelar" icon="fa fa-remove" oncomplete="PF('cancelDialog').show()"
+								title="Cancelar citas">
+								<f:setPropertyActionListener value="#{cita}" 
+									target="#{reserBeanCita.selectedCita}" />
+							</p:commandButton>
+							<hr></hr>
+						</h:panelGrid>
+
+					</p:dataViewListItem>
+				</p:dataGrid>
+
+				<p:dialog header="Detalles cita" widgetVar="citaDialog" modal="true"
+					showEffect="fade" hideEffect="fade" resizable="false">
+					<p:outputPanel id="citaDetail" style="text-align:center;">
+						<p:panelGrid columns="2"
+							rendered="#{not empty reserBeanCita.selectedCita}"
+							columnClasses="label,value">
+
+							<h:outputText value="Asunto:" />
+							<h:outputText value="#{reserBeanCita.selectedCita.asuntoReser}"
+								style="font-weight: bold" />
+							<h:outputText value="Síntomas:" />
+							<h:outputText value="#{reserBeanCita.selectedCita.sintomaReser}"
+								style="font-weight: bold" />
+
+							<h:outputText value="Fecha:" />
+							<h:outputText value="#{reserBeanCita.selectedCita.fechaReser}"
+								style="font-weight: bold" />
+
+							<h:outputText value="Hora:" />
+							<h:outputText value="#{reserBeanCita.selectedCita.horaReser}"
+								style="font-weight: bold" />
+
+							<h:outputText value="Doctor:" />
+							<h:outputText
+								value="#{reserBeanCita.selectedCita.medMedico.nombresMed} #{reserBeanCita.selectedCita.medMedico.apellidosMed}"
+								style="font-weight: bold" />
+						</p:panelGrid>
+					</p:outputPanel>
+				</p:dialog>
+				
+				<p:dialog header="Seguro que desea cancelar?" widgetVar="cancelDialog" modal="true"
+					showEffect="fade" hideEffect="fade" resizable="false">
+					<p:commandButton value="Cancelar" icon="fa fa-remove" update=":formCitas"
+					 oncomplete="PF('cancelDialog').hide()" action="#{reserBeanCita.actionCancelarCita()}"
+								title="Cancelar citas">								
+							</p:commandButton>
+				</p:dialog>
+			</h:form>
 		</p:panel>
 	</div>
 </body>

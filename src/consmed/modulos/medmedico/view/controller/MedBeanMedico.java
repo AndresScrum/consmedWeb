@@ -3,12 +3,14 @@ package consmed.modulos.medmedico.view.controller;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.faces.view.ViewScoped;
+import javax.inject.Inject;
 import javax.inject.Named;
 
 import consmed.core.model.entities.AuthRol;
 import consmed.core.model.entities.MedEspecialidad;
 import consmed.core.model.entities.MedMedico;
 import consmed.modulos.authautorizacion.model.AuthManagerAutorizacion;
+import consmed.modulos.authautorizacionlogin.view.controller.AuthBeanLogin;
 import consmed.modulos.medmedico.model.MedManagerMedico;
 import consmed.modulos.view.util.JSFUtil;
 
@@ -32,7 +34,8 @@ public class MedBeanMedico implements Serializable {
 	private int id_especialidad_fk;
 	private String foto_med;
 private MedMedico medMedico;
-	//MedEspecialidad
+private MedMedico editarmed;
+//MedEspecialidad
 	private int id_especialidad;
 	private String nombre_esp;
 	private boolean activo_esp;
@@ -43,6 +46,8 @@ private MedMedico medMedico;
 	private MedManagerMedico medManagerMedico;
 	private List<MedMedico>listaMedicos;
 	private List<MedEspecialidad>listaEspecialidades;
+	@Inject
+	private AuthBeanLogin authBeanLogin;
 //AuthUsuario
 private int	id_usuario;
 private String correo_usua;
@@ -57,6 +62,7 @@ private AuthRol rol;
 @PostConstruct
 public void init() {
 	try {
+		System.out.println("init() m�dico");
 		listaEspecialidades=medManagerMedico.findAllMedEspecialidades();
 		listaMedicos=medManagerMedico.findAllMedMedicos();
 		listaRoles=authManagerAutorizacion.findAllRoles();
@@ -95,6 +101,38 @@ public void init() {
 	public void actionListenerCargarMedEspecialidad(MedEspecialidad especialidad) {
 			medEspecialidad=especialidad;	
 	}
+	public String actionCargarMedicoPerfil() {
+try {
+	System.out.println("ID: "+authBeanLogin.getLogin().getId_usuario());
+			
+			editarmed=medManagerMedico.findMedMedicoByUsuario(authBeanLogin.getLogin().getId_usuario());
+		if (editarmed==null) {
+			JSFUtil.crearMensajeError("ERROR AL CARGAR");
+			return "";
+		}
+			System.out.println("pasa");
+			authBeanLogin.setEditarmed(editarmed);
+			System.out.println("pasa");
+		
+		System.out.println("N"+editarmed.getCorreoMed());
+		JSFUtil.crearMensajeInfo("Bienvenido Médico ");
+		return"editarPerfil?faces-redirect=true";
+		} catch (Exception e) {
+			JSFUtil.crearMensajeError("" + e.getMessage());
+			e.printStackTrace();
+			return"";
+		}
+	}
+	public void editarMedicoPerfil() {
+		try {
+			editarmed=authBeanLogin.getEditarmed();
+			medManagerMedico.editarMedicoPerfil(editarmed, id_especialidad_fk, "Médico");
+			JSFUtil.crearMensajeInfo("Sus datos han sido correctamente editados!");
+		} catch (Exception e) {
+			JSFUtil.crearMensajeError("" + e.getMessage());
+			e.printStackTrace();
+		}
+	}
 	public void actionListenerCargarAuthRol(AuthRol rolCargado) {
 			rol=rolCargado;
 }
@@ -109,16 +147,37 @@ public void init() {
 			}
 			
 		}
+		public void actionListenerIngresarRol() {
+			try {
+				medManagerMedico.ingresarRol(nombre_rol, activo_rol);
+				listaRoles=authManagerAutorizacion.findAllRoles();
+				JSFUtil.crearMensajeInfo("El rol ha sido creado correctamente! ");
+				
+			} catch (Exception e) {
+				JSFUtil.crearMensajeError(""+e.getMessage());
+				e.printStackTrace();
+			}
+		}
 		
 	
 	public void actionListenerCargarMedMedico(MedMedico medico) {
 			medMedico=medico;	
 	}
+	public void actionListenerEditarAuthRol() {
+		try {
+			medManagerMedico.editarRol(rol);
+			JSFUtil.crearMensajeInfo("El rol ha sido editado correctamente");
+		} catch (Exception e) {
+			JSFUtil.crearMensajeError(e.getMessage());
+			e.printStackTrace();
+		}
+		
+	}
 	public void actionListenerEditarMedMedico() {
 		try {
-			medManagerMedico.editarMedico(medMedico,id_especialidad_fk,id_rol_fk);
+			medManagerMedico.editarMedico(medMedico,id_especialidad_fk,"Médico");
 			listaMedicos=medManagerMedico.findAllMedMedicos();
-			JSFUtil.crearMensajeInfo("EL médico ha sido ingresado correctamente");
+			JSFUtil.crearMensajeInfo("EL médico ha sido editado correctamente");
 		} catch (Exception e) {
 			JSFUtil.crearMensajeError(e.getMessage());
 			e.printStackTrace();
@@ -127,11 +186,33 @@ public void init() {
 	}
 
 
+	public void actionListenerEliminarMedico(int id_medico) {
+		try {
+			medManagerMedico.eliminarMedMedico(id_medico);
+			listaMedicos=medManagerMedico.findAllMedMedicos();
+			JSFUtil.crearMensajeInfo("El médicoha sidoeliminadocorrectamente!");
+		} catch (Exception e) {
+			JSFUtil.crearMensajeError(e.getMessage());
+			e.printStackTrace();
+		}
+		
+	}
 	public void actionListenerEliminarEspecialidad(int id_especialidad) {
 		try {
 			medManagerMedico.eliminarMedEspecialidad(id_especialidad);
 			listaEspecialidades=medManagerMedico.findAllMedEspecialidades();
 			JSFUtil.crearMensajeInfo("La especialidad ha sido eliminada correctamente!");
+		} catch (Exception e) {
+			JSFUtil.crearMensajeError(e.getMessage());
+			e.printStackTrace();
+		}
+		
+	}
+	public void actionListenerEliminarRol(int id_rol) {
+		try {
+			medManagerMedico.eliminarAuthRol(id_rol);
+			listaRoles=authManagerAutorizacion.findAllRoles();
+			JSFUtil.crearMensajeInfo("El rol ha sido eliminado correctamente!");
 		} catch (Exception e) {
 			JSFUtil.crearMensajeError(e.getMessage());
 			e.printStackTrace();
@@ -356,6 +437,14 @@ public void init() {
 
 	public void setRol(AuthRol rol) {
 		this.rol = rol;
+	}
+
+	public MedMedico getEditarmed() {
+		return editarmed;
+	}
+
+	public void setEditarmed(MedMedico editarmed) {
+		this.editarmed = editarmed;
 	}
 	
 	

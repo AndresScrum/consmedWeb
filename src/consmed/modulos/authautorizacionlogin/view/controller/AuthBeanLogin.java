@@ -6,13 +6,14 @@ import javax.enterprise.context.SessionScoped;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.inject.Named;
-import javax.servlet.http.HttpServletRequest;
 
 import consmed.core.model.entities.AuthRol;
+import consmed.core.model.entities.MedMedico;
 import consmed.core.model.entities.PacPaciente;
 import consmed.modulos.authautorizacion.model.AuthManagerAutorizacion;
 import consmed.modulos.login.model.AuthManagerLogin;
 import consmed.modulos.login.model.Login;
+import consmed.modulos.seguridad.Seguridad;
 import consmed.modulos.view.util.JSFUtil;
 
 import java.io.IOException;
@@ -23,6 +24,9 @@ import java.util.List;
 @SessionScoped
 public class AuthBeanLogin implements Serializable {
 	private static final long serialVersionUID = 1L;
+	//pac paciente
+private	PacPaciente editarpac;
+private	MedMedico editarmed;
 	//Med Medico
 	private int id_paciente;
 	private String nombres_pac;
@@ -55,22 +59,25 @@ public class AuthBeanLogin implements Serializable {
 	
 	@PostConstruct
 	public void inicializar() {
-		HttpServletRequest req=(HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
-	}
+}
+
 	
 	public String actionIngresarPaciente() {
 		try {
 			authManagerAutorizacion.ingresarPacPaciente(nombres_pac, apellidos_pac, identificacion,
 					correo_pac, contrasenia_pac, telefono_pac, direccion_pac, true);
+			login=authManagerLogin.comprobarCredenciales(correo_pac, contrasenia_pac);
 		JSFUtil.crearMensajeInfo("El paciente ha sido creado correctamente!");
-		return "pacpaciente/menu?faces-redirect=true";
+		return "pacpacientes/menu?faces-redirect=true";
 		} catch (Exception e) {
-
+			
 			JSFUtil.crearMensajeError(""+e.getMessage());
 			e.printStackTrace();
+			return "";
+		
 			
 		}
-		return "";
+		
 	}
 	//Administrador ingresar Médico 
 	public String actionIngresarMedico() {
@@ -78,6 +85,8 @@ public class AuthBeanLogin implements Serializable {
 			authManagerAutorizacion.ingresarPacPaciente(nombres_pac, apellidos_pac, identificacion,
 					correo_pac, contrasenia_pac, telefono_pac, direccion_pac, true);
 		JSFUtil.crearMensajeInfo("El paciente ha sido creado correctamente!");
+		
+		
 		return "pacpaciente/menu?faces-redirect=true";
 		} catch (Exception e) {
 
@@ -89,25 +98,33 @@ public class AuthBeanLogin implements Serializable {
 	}
 	public String actionLogin() {
 		try {
+			
+if (login!=null) {
+				return "/menu?faces-redirect=true";
+			}
+            contrasenia_usua=Seguridad.encriptar(contrasenia_usua);
 			login=authManagerLogin.comprobarCredenciales(correo_usua, contrasenia_usua);
-			if (login==null) {
-				System.out.println("ESTA VACIO");	
+			
+			if (login==null||login.getNombres()==null) {
+			JSFUtil.crearMensajeError("Credenciales incorrectas vuelva a ingresar");	
+			return "";
 			}else {
 				System.out.println("si"+login.getNombres());
-			}
+			
 			
 			JSFUtil.crearMensajeInfo("Bienvenido!"+login.getCorreo());
-			System.out.println("ROL: "+login.getCorreo());
+			System.out.println("ROL NOMBRE: "+login.getCorreo());
 			if (login.getNombre_rol().equals("Paciente")) {
 				
 				System.out.println("ddddddd "+login.getNombres());
 				return"pacpacientes/menu?faces-redirect=true";
 			}else {
-				if (login.getNombre_rol().equals("Médico")) {
+				if (login.getNombre_rol().equals("M�dico")) {
 					return"medico/menu?faces-redirect=true";
 				}else {
 					return"administrador/menu?faces-redirect=true";
 				}
+			}
 			}
 		} catch (Exception e) {
 		
@@ -117,51 +134,91 @@ public class AuthBeanLogin implements Serializable {
 		
 		return"";
 	}
-	
-	
+		
+		
 	public String  actionCerrarSesion() {
 		FacesContext.getCurrentInstance().getExternalContext().invalidateSession();		
 		return "/login?faces-redirect=true";
 	}
 	
 	public void actionComprobarSessionLogin(){
-    	ExternalContext ec = FacesContext.getCurrentInstance().getExternalContext();
-    	try {
+		try {
+    	System.out.println("ENTRAS");
+		ExternalContext ec = FacesContext.getCurrentInstance().getExternalContext();
+		System.out.println("ENTRAS");
+		
     	String path=ec.getRequestPathInfo();
-    	System.out.println("getRequestContextPath(): "+ec.getRequestContextPath());
-    	System.out.println("getRequestPathInfo(): "+path);
+    	System.out.println("1getRequestContextPath(): "+ec.getRequestContextPath());
+    	System.out.println("2getRequestPathInfo(): "+path);
+    	System.out.println("login.getNombres(): ");
     	
-    	if(path.equals("/login.xhtml"))
-    	return;
-    	if(login==null)
-    	ec.redirect(ec.getRequestContextPath() + "/faces/login.xhtml");
-    	else
+    	if(login==null) {
+    		System.out.println("login==null");
+    		if(path.equals("/login.xhtml"))
+    	    	return;
+    		if (path.equals("/pacpacientes/menu.xhtml")) {
+    			ec.redirect(ec.getRequestContextPath() + "/faces/login.xhtml");
+			}
+	if (path.equals("/medico/menu.xhtml")) {
+		ec.redirect(ec.getRequestContextPath() + "/faces/login.xhtml");	
+			}
+	if (path.equals("/registrarPaciente.xhtml")) {
+		return;
+	}
+	if (path.equals("/restablecerContasenia.xhtml")) {
+		return;
+	}
+    	}
+    	else {
     	activoLogin=true;
+    	System.out.println("Nombres del login actual"+login.getNombres());
+    	
+    	}
     	
     	if(!activoLogin){
     	ec.redirect(ec.getRequestContextPath() + "/faces/login.xhtml");
     	}else{
+    		if(path.equals("/login.xhtml")||path.equals("/registrarPaciente.xhtml")) {
+    			System.out.println("ENTRAS AQUI");
+    			if (login.getNombre_rol().equals("Administrador")) {
+    				ec.redirect(ec.getRequestContextPath() +	 "/faces/administrador/menu.xhtml");
+    		    		
+				}else {
+					if (login.getNombre_rol().equals("Médico")) {
+						ec.redirect(ec.getRequestContextPath() + "/faces/medico/menu.xhtml");
+    		    		
+							
+					}else {
+						ec.redirect(ec.getRequestContextPath() + "/faces/pacpacientes/menu.xhtml");
+					}
+				}
+    		}
+        	//si hizo login, verificamos que acceda a paginas permitidas:
+        
     	//si hizo login, verificamos que acceda a paginas permitidas:
-    	if(login.equals("Administrador")){
-    	if(!path.contains("/administrador/"))
-    	ec.redirect(ec.getRequestContextPath() + "/faces/login.xhtml");
+    	if(login.getNombre_rol().equals("Administrador")){
+System.out.println("path.contains "+path.contains("/administrador/"));
+    		if(!path.contains("/administrador/"))
+    	ec.redirect(ec.getRequestContextPath() +"/faces/login.xhtml");
     	else
     	return;
     	}
     	//si hizo login, verificamos que acceda a paginas permitidas:
-    	if(login.equals("Médico")){
+    	if(login.getNombre_rol().equals("Médico")){
     	if(!path.contains("/medico/"))
-    	ec.redirect(ec.getRequestContextPath() + "/faces/login.xhtml");
+    	ec.redirect(ec.getRequestContextPath() +"/faces/login.xhtml");
     	else
     	return;
     	}
     	
-    	if(!path.contains("/paciente/"))
-    	ec.redirect(ec.getRequestContextPath() + "/faces/login.xhtml");
+    	if(!path.contains("/pacpacientes/"))
+    	ec.redirect(ec.getRequestContextPath() +"/faces/login.xhtml");
     	}
     	} catch (IOException e) {
     	e.printStackTrace();
+    	JSFUtil.crearMensajeError(""+e.getMessage());
     	}
+    	return;
     	}
 
 	public int getId_rol() {
@@ -346,6 +403,22 @@ public class AuthBeanLogin implements Serializable {
 
 	public void setListaPacientes(List<PacPaciente> listaPacientes) {
 		this.listaPacientes = listaPacientes;
+	}
+
+	public PacPaciente getEditarpac() {
+		return editarpac;
+	}
+
+	public void setEditarpac(PacPaciente editarpac) {
+		this.editarpac = editarpac;
+	}
+
+	public MedMedico getEditarmed() {
+		return editarmed;
+	}
+
+	public void setEditarmed(MedMedico editarmed) {
+		this.editarmed = editarmed;
 	}
 	
 

@@ -2,9 +2,11 @@ package consmed.modulos.pacpaciente.view.controller;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
+import javax.faces.annotation.ManagedProperty;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.faces.view.ViewScoped;
+import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.primefaces.event.ScheduleEntryMoveEvent;
@@ -16,9 +18,11 @@ import org.primefaces.model.LazyScheduleModel;
 import org.primefaces.model.ScheduleEvent;
 import org.primefaces.model.ScheduleModel;
 
+import consmed.core.model.entities.PacPaciente;
 import consmed.core.model.entities.ReserCita;
 import consmed.modulos.authautorizacionlogin.view.controller.AuthBeanLogin;
 import consmed.modulos.login.model.Login;
+import consmed.modulos.pacpaciente.model.PacManagerPaciente;
 import consmed.modulos.resercita.model.ReserManagerCita;
 
 import java.io.Serializable;
@@ -40,18 +44,25 @@ public class PacScheduleViewPaciente implements Serializable {
 
 	private ScheduleModel lazyEventModel;
 	private int idPaciente;
-
+	private int idUsuario;
 	private ScheduleEvent event = new DefaultScheduleEvent();
 
 	@EJB
 	private ReserManagerCita resMan;
+	@EJB
+	private PacManagerPaciente pacManagerPaciente;
+	
+	@Inject
+	PacBeanPaciente beanPaciente;
 
 	@PostConstruct
 	public void init() {
-		cargarCitasCalendario();
-
+		setIdPaciente(beanPaciente.getId_paciente());
+		cargarCitasCalendario();		
+		System.out.println("Init() pacSeche.. ");
+		//System.out.println("idUsuario: "+login.getId_usuario());
 		lazyEventModel = new LazyScheduleModel() {
-
+			
 			/**
 			 * 
 			 */
@@ -69,11 +80,17 @@ public class PacScheduleViewPaciente implements Serializable {
 		};
 	}
 
+	public int searchIdPaciente(int idUsuario) {		
+		PacPaciente pac=pacManagerPaciente.findPacienteByIdUsuario(idUsuario);
+		System.out.println("IdPaciente: "+pac.getIdPaciente());
+		setIdPaciente(pac.getIdPaciente());
+		return getIdPaciente();
+	}
 	// Carga citas calendario
 	public void cargarCitasCalendario() {
 		try {
-			List<ReserCita> list = resMan.findCitaByPaciente(17);
-
+			//int idPaciente=searchIdPaciente(authBeanLogin.getLogin().getId_usuario());
+			List<ReserCita> list = resMan.findCitaByPaciente(idPaciente);
 			eventModel = new DefaultScheduleModel();
 			for (ReserCita reserCita : list) {
 				Date dateI= getFechaEvento(reserCita.getFechaReser(), reserCita.getHoraReser());
@@ -203,4 +220,15 @@ public class PacScheduleViewPaciente implements Serializable {
 	public void setIdPaciente(int idPaciente) {
 		this.idPaciente = idPaciente;
 	}
+
+	public int getIdUsuario() {
+		return idUsuario;
+	}
+
+	public void setIdUsuario(int idUsuario) {
+		this.idUsuario = idUsuario;
+	}
+
+	
+	
 }

@@ -3,9 +3,11 @@ package consmed.modulos.pacpaciente.view.controller;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.faces.view.ViewScoped;
+import javax.inject.Inject;
 import javax.inject.Named;
 import consmed.core.model.entities.PacPaciente;
 import consmed.modulos.authautorizacion.model.AuthManagerAutorizacion;
+import consmed.modulos.authautorizacionlogin.view.controller.AuthBeanLogin;
 import consmed.modulos.pacpaciente.model.PacManagerPaciente;
 import consmed.modulos.view.util.JSFUtil;
 
@@ -28,6 +30,15 @@ public class PacBeanPaciente implements Serializable {
 	private boolean activo_pac;
 	private String foto_pac;
 	private PacPaciente paciente;
+	private PacPaciente editarpac;
+	public PacPaciente getEditarpac() {
+		return editarpac;
+	}
+
+	public void setEditarpac(PacPaciente editarpac) {
+		this.editarpac = editarpac;
+	}
+
 	@EJB
 	private PacManagerPaciente pacManagerPaciente;
 	@EJB
@@ -38,17 +49,25 @@ public class PacBeanPaciente implements Serializable {
 	private String correo_usua;
 	private String contrasenia_usua;
 	private int id_rol_fk;
-
+@Inject
+private AuthBeanLogin authBeanLogin; 
 	@PostConstruct
 	public void init() {
 		try {
 			listaPacientes = pacManagerPaciente.findAllPacPacientes();
+			searchIdPaciente(authBeanLogin.getLogin().getId_usuario());
 			
 		} catch (Exception e) {
 
 		}
 	}
 
+	public void searchIdPaciente(int idUsuario) {	
+		System.out.println("idUsuario-login: "+idUsuario);
+		PacPaciente pac=pacManagerPaciente.findPacienteByIdUsuario(idUsuario);
+		System.out.println("IdPaciente: "+pac.getIdPaciente());
+		setId_paciente(pac.getIdPaciente());
+	} 
 	public void actionListenerIngresarPaciente() {
 		try {
 			contrasenia_usua = identificacion;
@@ -61,6 +80,31 @@ public class PacBeanPaciente implements Serializable {
 					contrasenia_usua, rol, telefono_pac, direccion_pac, true, foto_pac);
 			listaPacientes = pacManagerPaciente.findAllPacPacientes();
 			JSFUtil.crearMensajeInfo("El paciente ha sido creado correctamente!");
+		} catch (Exception e) {
+			JSFUtil.crearMensajeError("" + e.getMessage());
+			e.printStackTrace();
+		}
+	}
+	public String actionCargarPacientePerfil() {
+		try {
+			
+			editarpac=pacManagerPaciente.findPacPacienteByUsuario(authBeanLogin.getLogin().getId_usuario());
+			authBeanLogin.setEditarpac(editarpac);
+		System.out.println("N"+editarpac.getApellidosPac());
+		System.out.println("N"+editarpac.getCorreoPac());
+		JSFUtil.crearMensajeInfo("Bienvenido Paciente ");
+		return"editarPerfil?faces-redirect=true";
+		} catch (Exception e) {
+			JSFUtil.crearMensajeError("" + e.getMessage());
+			e.printStackTrace();
+			return"";
+		}
+	}
+	public void actionListenerEditarPacientePerfil() {
+		try {
+			editarpac=authBeanLogin.getEditarpac();
+			pacManagerPaciente.editarPacPacientePerfil(editarpac);
+			JSFUtil.crearMensajeInfo("Sus datos han sido correctamente editados!");
 		} catch (Exception e) {
 			JSFUtil.crearMensajeError("" + e.getMessage());
 			e.printStackTrace();

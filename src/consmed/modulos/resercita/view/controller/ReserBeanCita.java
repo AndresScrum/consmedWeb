@@ -6,6 +6,7 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -14,12 +15,17 @@ import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.faces.view.ViewScoped;
+import javax.inject.Inject;
 import javax.inject.Named;
 
 import consmed.core.model.entities.MedMedico;
 import consmed.core.model.entities.PacPaciente;
 import consmed.core.model.entities.ReserCita;
+import consmed.modulos.authautorizacionlogin.view.controller.AuthBeanLogin;
+import consmed.modulos.medmedico.model.MedManagerMedico;
 import consmed.modulos.pacpaciente.model.PacManagerPaciente;
+import consmed.modulos.pacpaciente.view.controller.PacBeanPaciente;
+import consmed.modulos.pacpaciente.view.controller.PacScheduleViewPaciente;
 import consmed.modulos.resercita.model.ReserManagerCita;
 import consmed.modulos.segauditoria.model.SegManagerAuditoria;
 import consmed.modulos.view.util.JSFUtil;
@@ -32,15 +38,17 @@ public class ReserBeanCita implements Serializable {
 	private int idMedico;
 	private MedMedico medMedico;
 	private int idUsuario;
+	private int idPaciente;
 	private Date fecha;
 	private Date minFecha;
 	private String horaSelect;
 	private String asunto;
 	private String sintoma;
-	private ReserCita cita;
+	private ReserCita selectedCita;
 	private List<ReserCita> listCitasMedico;
 	private List<ReserCita> listCitasPagado;	
 	private List<ReserCita> listCitasNoPagado;
+	private List<ReserCita> listCitasDocFecha;
 	private Map<String,String> listHorasDispo = new HashMap<String, String>();
 	private List<HorasDisponibles> listHoras=new ArrayList<HorasDisponibles>();
 	
@@ -51,18 +59,49 @@ public class ReserBeanCita implements Serializable {
 	@EJB
 	private PacManagerPaciente pacManagerPaciente;
 	@EJB
+	private MedManagerMedico medManagerMedico;
+	@EJB
 	private SegManagerAuditoria segManagerAuditoria;
 	
+	@Inject
+	private PacBeanPaciente beanPaciente;
+	@Inject AuthBeanLogin authBeanLogin;
 	@PostConstruct
 	public void init() {
 		System.out.println("Init Reserv()");
+		
 		minFecha=new Date();
-		setShowDatosCita(true);
-		 listHorasDispo= new HashMap<String, String>();
-		 
+		if(authBeanLogin.getLogin().getNombre_rol().equals("Médico")) {
+			getIdMedico(authBeanLogin.getLogin().getId_usuario());
+			//Hoy
+			fecha=new Date();
+			try {
+				Calendar calendar = Calendar.getInstance();
+				calendar.setTime(minFecha); // Configuramos la fecha que se recibe
+				calendar.add(Calendar.DAY_OF_YEAR, -1);  // numero de días a añadir, o restar en caso de días<0
+				minFecha=calendar.getTime();
+				listCitasDocFecha=reserManagerCita.findCitaByDocFecha(idMedico, fecha);
+				for (ReserCita reserCita : listCitasDocFecha) {
+					System.out.println(reserCita.getAsuntoReser());
+				}
+			} catch (ParseException e) {
+				e.getMessage();
+			}
+		}else if(authBeanLogin.getLogin().getNombre_rol().equals("Paciente")) {
+			setIdPaciente(beanPaciente.getId_paciente());
+			setShowDatosCita(true);
+			 listHorasDispo= new HashMap<String, String>();
+			 try {
+				listCitasNoPagado=reserManagerCita.findCitaNoPagadoByPaciente(idPaciente);
+			} catch (ParseException e) {
+				e.getMessage();
+			}
+		}
+		
 			
 		
 	}
+	
 	public String irMenuReservas(int idUsuario) {
 		setIdUsuario(idUsuario);
 		return "reservaMenu";
@@ -175,6 +214,17 @@ public class ReserBeanCita implements Serializable {
 		System.out.println("IdPaciente: "+pac.getIdPaciente());
 		return pac;
 	}
+	
+	/**
+	 * Obtiene id de medico
+	 * @param idUsuario
+	 * @return
+	 */
+	public void getIdMedico(int idUsuario) {
+		MedMedico med=medManagerMedico.findMedMedicoByUsuario(idUsuario);
+		System.out.println("IdMedico: "+med.getIdMedico());
+		setIdMedico(med.getIdMedico());
+	}
 
 	
 	public Date getMinFecha() {
@@ -193,8 +243,48 @@ public class ReserBeanCita implements Serializable {
 		return "reservaMenu";
 	}
 
+	public String actionCancelarCita() {
+		ReserCita cita=selectedCita;
+		reserManagerCita.actualizarEstadoCita(cita, false);
+		segManagerAuditoria.ingresarBitacora(idUsuario, "actionCancelarCita","Paciente canceló cita");
+		try {
+			listCitasNoPagado=reserManagerCita.findCitaNoPagadoByPaciente(idPaciente);
+		} catch (ParseException e) {
+			e.getMessage();
+		}
+		return "";
+	}
+	
+	/**
+	 * Obtiene citas del presente día
+	 */
+	public String actionGetCitasDocHoy() {
+		Date fecha=new Date();
+		try {
+			this.listCitasDocFecha=reserManagerCita.findCitaByDocFecha(idMedico, fecha);
+		} catch (ParseException e) {
+			e.getMessage();
+		}
+		return "";
+	}
+	
+	/**
+	 * Obtiene citas por fecha
+	 */
+	public String actionGetCitasDocFecha() {
+		try {
+			System.out.println("getCitasMed");
+			this.listCitasDocFecha=reserManagerCita.findCitaByDocFecha(idMedico, fecha);
+		} catch (ParseException e) {
+			e.getMessage();
+		}
+		
+		return "";
+	}
+	
 	
 
+	
 
 	
 
@@ -303,6 +393,24 @@ public class ReserBeanCita implements Serializable {
 
 	public void setListCitasNoPagado(List<ReserCita> listCitasNoPagado) {
 		this.listCitasNoPagado = listCitasNoPagado;
+	}
+	public int getIdPaciente() {
+		return idPaciente;
+	}
+	public void setIdPaciente(int idPaciente) {
+		this.idPaciente = idPaciente;
+	}
+	public ReserCita getSelectedCita() {
+		return selectedCita;
+	}
+	public void setSelectedCita(ReserCita selectedCita) {
+		this.selectedCita = selectedCita;
+	}
+	public List<ReserCita> getListCitasDocFecha() {
+		return listCitasDocFecha;
+	}
+	public void setListCitasDocFecha(List<ReserCita> listCitasDocFecha) {
+		this.listCitasDocFecha = listCitasDocFecha;
 	}
 
 	

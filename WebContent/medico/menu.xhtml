@@ -1,57 +1,32 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/es/xhtml1/DTD/xhtml1-transitional.dtd"> 
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/es/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:ui="http://java.sun.com/jsf/facelets"
-      xmlns:f="http://java.sun.com/jsf/core"
-      xmlns:h="http://java.sun.com/jsf/html"
-      xmlns:p="http://primefaces.org/ui"> 
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui">
 
 <h:head>
-<script type="text/javascript">
-    PrimeFaces.locales['es'] = {
-    		 closeText: "Cerrar",
-    		    prevText: "Anterior",
-    		    nextText: "Siguiente",
-    		    monthNames: ["Enero","Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"],
-    		    monthNamesShort: ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"],
-    		    dayNames: ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"],
-    		    dayNamesShort: ["Dom", "Lun", "Mar", "Mie", "Jue", "Vie", "Sab"],
-    		    dayNamesMin: ["Do", "Lu", "Ma", "Mi", "Ju", "Vi", "Sa"],
-    		    weekHeader: "Semana",
-    		    firstDay: 0,
-    		    isRTL: false,
-    		    showMonthAfterYear: false,
-    		    yearSuffix: "",
-    		    timeOnlyTitle: "Solo hora",
-    		    timeText: "Tiempo",
-    		    hourText: "Hora",
-    		    minuteText: "Minuto",
-    		    secondText: "Segundo",
-    		    currentText: "Fecha actual",
-    		    ampm: false,
-    		    month: "Mes",
-    		    week: "Semana",
-    		    day: "Día",
-    		    allDayText : "Todo el día"
-    		};
-</script>
-<style type="text/css">
-    .value {
-        width: 1000px;
-    }
-</style></h:head> 
-<body> 
-<div id="menu">
+
+	<style type="text/css">
+.value {
+	width: 1000px;
+}
+</style>
+</h:head>
+<body>
+	<div id="menu">
 		<h:form>
+			<p:growl id="messages" showDetail="true" />
 			<p:menubar>
 				<p:menuitem>
 					<p:graphicImage value="resources/images/logo1.png"></p:graphicImage>
 				</p:menuitem>
+				<!-- 
 				<p:menuitem value="ATRÁS" title="ATRÁS" icon="fa fa-arrow-left"
-					action="/segaccesos/administrador/index?faces-redirect=true"  />
+					action="/segaccesos/administrador/index?faces-redirect=true" />  -->
 				<p:menuitem value="Inicio" title="Inicio" icon="fa fa-home"
 					action="/segaccesos/menu?faces-redirect=true"></p:menuitem>
-				<p:menuitem value="Nuevo Módulo" title="Ingresar Nuevo Módulo"
-					icon=" fa fa-plus " onclick="PF('nuevoModulo').show();"></p:menuitem>
+				
 				<f:facet name="options">
 					<p:commandButton title="Datos de usuario" icon="fa fa-user"
 						value="#{authBeanLogin.login.nombres}" />
@@ -61,45 +36,67 @@
 			</p:menubar>
 		</h:form>
 	</div>
-<h:form>
-    <p:growl id="messages" showDetail="true" />
-      <div align="center">
-      <p:panel header="Bienvenido Médico">
-    <h:panelGrid columnClasses="value">
-        <div align="center"><h1 >Horarios de atención</h1></div>
-        <p:schedule id="schedule" value="#{scheduleView.eventModel}" widgetVar="myschedule" timeZone="GMT+5" locale="es">
- 
-            <p:ajax event="dateSelect" listener="#{scheduleView.onDateSelect}" update="eventDetails" oncomplete="PF('eventDialog').show();" />
-            <p:ajax event="eventSelect" listener="#{scheduleView.onEventSelect}" update="eventDetails" oncomplete="PF('eventDialog').show();" />
-            <p:ajax event="eventMove" listener="#{scheduleView.onEventMove}" update="messages" />
-            <p:ajax event="eventResize" listener="#{scheduleView.onEventResize}" update="messages" />
- 
-        </p:schedule>
- 
+	<h:form id="formCitaFecha">
+		<h:panelGrid columns="3" cellpadding="5">
+			<p:outputLabel for="fecha" value="Fecha:" />
+			<p:calendar id="fecha" value="#{reserBeanCita.fecha}" showOn="button"
+				mindate="#{reserBeanCita.minFecha}" required="true"
+				requiredMessage="Seleccione un día" />
 
-    </h:panelGrid>
-    </p:panel>
-    </div>     
-    <p:dialog widgetVar="eventDialog" header="Event Details" showEffect="clip" hideEffect="clip">
-        <h:panelGrid id="eventDetails" columns="2">
-            <p:outputLabel for="title" value="Evento:" />
-            <p:inputText id="title" value="#{scheduleView.event.title}" required="true" />
- 
-            <p:outputLabel for="from" value="Desde:" />
-            <p:calendar id="from" value="#{scheduleView.event.startDate}" timeZone="GMT+5" pattern="dd/MM/yyyy HH:mm"/>
- 
-            <p:outputLabel for="to" value="Hasta:" />
-            <p:calendar id="to" value="#{scheduleView.event.endDate}" timeZone="GMT+5" pattern="dd/MM/yyyy HH:mm"/>
- 
-            <p:outputLabel for="allDay" value="Todo el día:" />
-            <h:selectBooleanCheckbox id="allDay" value="#{scheduleView.event.allDay}" />
- 
-            <p:commandButton type="reset" value="Resetear" />
-            <p:commandButton id="addButton" value="Guardar" action="#{scheduleView.addEvent}" oncomplete="PF('myschedule').update();PF('eventDialog').hide();" />
-        </h:panelGrid>
-    </p:dialog>    
+			<p:commandButton update=":formCitas"
+				action="#{reserBeanCita.actionGetCitasDocFecha()}" value="Ver citas" />
+		</h:panelGrid>
+		<hr></hr>
+	</h:form>
 
-</h:form>
+	<div align="center">
+		<p:panel header="Bienvenido Médico">
+			<div align="center">
+				<h1>Citas</h1>
+			</div>
+			<h:form id="formCitas">
+				<p:dataGrid var="cita" value="#{reserBeanCita.listCitasDocFecha}"
+					emptyMessage="No se encontraron citas" rows="6" paginator="true"
+					rowsPerPageTemplate="6,12,16"
+					paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+					gridIcon="pi pi-th-large" listIcon="pi pi-bars">
+					<p:dataViewListItem>
+						<h:panelGrid columns="1" style="width:100%">
+							<p:outputPanel>
+								<h:panelGrid columns="2" cellpadding="5">
+									<h:outputText value="Asunto:" />
+									<h:outputText value="#{cita.asuntoReser}"
+										style="font-weight: bold" />
 
-</body> 
+
+									<h:outputText value="Fecha:" />
+									<h:outputText value="#{cita.fechaReser}"
+										style="font-weight: bold" />
+
+									<h:outputText value="Hora:" />
+									<h:outputText value="#{cita.horaReser}"
+										style="font-weight: bold" />
+
+									<h:outputText value="Paciente:" />
+									<h:outputText
+										value="#{cita.pacPaciente.nombresPac} #{cita.pacPaciente.apellidosPac}"
+										style="font-weight: bold" />
+								</h:panelGrid>
+							</p:outputPanel>
+							<p:commandButton value="Detalles" icon="fa fa-align-left"
+								
+								oncomplete="PF('citaDialog').show()" title="ver detalles">
+								<f:setPropertyActionListener value="#{cita}"
+									target="#{reserBeanCita.selectedCita}" />
+							</p:commandButton>
+							<hr></hr>
+						</h:panelGrid>
+					</p:dataViewListItem>
+				</p:dataGrid>
+			</h:form>
+		</p:panel>
+	</div>
+
+
+</body>
 </html>
