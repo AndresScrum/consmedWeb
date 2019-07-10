@@ -21,11 +21,8 @@
 				<p:menuitem>
 					<p:graphicImage value="resources/images/logo1.png"></p:graphicImage>
 				</p:menuitem>
-				<!-- 
-				<p:menuitem value="ATRÁS" title="ATRÁS" icon="fa fa-arrow-left"
-					action="/segaccesos/administrador/index?faces-redirect=true" />  -->
 				<p:menuitem value="Inicio" title="Inicio" icon="fa fa-home"
-					action="/segaccesos/menu?faces-redirect=true"></p:menuitem>
+					action="menu?faces-redirect=true"></p:menuitem>
 				
 				<f:facet name="options">
 					<p:commandButton title="Datos de usuario" icon="fa fa-user"
@@ -83,10 +80,10 @@
 										style="font-weight: bold" />
 								</h:panelGrid>
 							</p:outputPanel>
-							<p:commandButton value="Atender" icon="fa fa-align-left"								
-								oncomplete="PF('citaDialog').show()" title="Atender">
-								<f:setPropertyActionListener value="#{cita}"
-									target="#{reserBeanCita.selectedCita}" />
+							<p:commandButton value="Atender" action="historiaClinica?faces-redirect=true" icon="fa fa-align-left"								
+								 title="Atender">
+								<f:setPropertyActionListener value="#{cita.pacPaciente}" 
+									target="#{reserBeanCita.paciente}" />
 							</p:commandButton>
 							<hr></hr>
 						</h:panelGrid>

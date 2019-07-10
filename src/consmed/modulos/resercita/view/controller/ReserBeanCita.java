@@ -37,6 +37,7 @@ public class ReserBeanCita implements Serializable {
 	
 	private int idMedico;
 	private MedMedico medMedico;
+	private PacPaciente paciente;
 	private int idUsuario;
 	private int idPaciente;
 	private Date fecha;
@@ -284,6 +285,11 @@ public class ReserBeanCita implements Serializable {
 	
 	
 
+	public String actionHistoriaClinica(PacPaciente paciente) {
+		setPaciente(paciente);
+		System.out.println("Id paciente sele: "+paciente.getIdPaciente());
+		return "historiaClinica?faces-redirect=true";
+	}
 	
 
 	
@@ -411,6 +417,14 @@ public class ReserBeanCita implements Serializable {
 	}
 	public void setListCitasDocFecha(List<ReserCita> listCitasDocFecha) {
 		this.listCitasDocFecha = listCitasDocFecha;
+	}
+
+	public PacPaciente getPaciente() {
+		return paciente;
+	}
+
+	public void setPaciente(PacPaciente paciente) {
+		this.paciente = paciente;
 	}
 
 	
