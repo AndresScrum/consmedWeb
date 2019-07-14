@@ -29,19 +29,19 @@
 	</div>
 
 	<p:panel>
-		<h:form>
+		<h:form id="cabecera">
 			<p:messages>
 				<p:autoUpdate />
 			</p:messages>
 			<div>
 				<h:panelGrid columns="6" cellpadding="5">
-					<p:outputLabel for="nombre" value="Nombres:" />
-					<h:outputText id="nombre" value="Nombres" style="font-weight: bold" />
+					<p:outputLabel for="nombre" value="Nombre:" />
+					<h:outputText id="nombre" value="#{pacBeanHistoriaC.paciente.nombresPac}" style="font-weight: bold" />
 					<p:outputLabel for="apellidos" value="Apellidos:" />
-					<h:outputText id="apellidos" value="Apellidos"
+					<h:outputText id="apellidos" value="#{pacBeanHistoriaC.paciente.apellidosPac}"
 						style="font-weight: bold" />
 					<p:outputLabel for="identificacion" value="CC:" />
-					<h:outputText id="identificacion" value="000000000"
+					<h:outputText id="identificacion" value="#{pacBeanHistoriaC.paciente.identificacion}"
 						style="font-weight: bold" />
 
 				</h:panelGrid>
@@ -49,7 +49,7 @@
 				<div>
 					<h:panelGrid columns="6" cellpadding="5">
 
-						<p:outputLabel for="nacimiento" value="Fecha nacimiento:" />
+						<p:outputLabel for="nacimiento" value="Fecha nacimiento (yyyy-mm-dd):" />
 						<p:inputText id="nacimiento" placeholder="1900-12-30"
 							value="#{pacBeanHistoriaC.fechaNacimiento}" rows="6" cols="33"
 							required="true" requiredMessage="Ingrese fecha de nacimiento" />
@@ -77,11 +77,12 @@
 							requiredMessage="Ingrese ocupación" />
 					</h:panelGrid>
 					<div style="display:#{(pacBeanHistoriaC.existeCab)?'none':'block'}">
-						<p:commandButton value="Guardar"
+						<p:commandButton value="Guardar" update="cabecera"
 							action="#{pacBeanHistoriaC.actionGuardarCabeceraHc()}" />
 					</div>
 					<div style="display:#{(pacBeanHistoriaC.existeCab)?'block':'none'}">
-						<p:commandButton value="Editar" />
+						<p:commandButton value="Editar" update="cabecera" 
+						action="#{pacBeanHistoriaC.actionUpdateCabeceraHc()}" />
 					</div>
 				</div>
 			</div>

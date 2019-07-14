@@ -285,11 +285,7 @@ public class ReserBeanCita implements Serializable {
 	
 	
 
-	public String actionHistoriaClinica(PacPaciente paciente) {
-		setPaciente(paciente);
-		System.out.println("Id paciente sele: "+paciente.getIdPaciente());
-		return "historiaClinica?faces-redirect=true";
-	}
+	
 	
 
 	

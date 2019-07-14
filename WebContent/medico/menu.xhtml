@@ -80,10 +80,11 @@
 										style="font-weight: bold" />
 								</h:panelGrid>
 							</p:outputPanel>
-							<p:commandButton value="Atender" action="historiaClinica?faces-redirect=true" icon="fa fa-align-left"								
+							<p:commandButton value="Atender" action="#{pacBeanHistoriaC.actionHistoriaClinica(cita.pacPaciente)}"
+							 icon="fa fa-align-left"								
 								 title="Atender">
-								<f:setPropertyActionListener value="#{cita.pacPaciente}" 
-									target="#{reserBeanCita.paciente}" />
+							<!--  	<f:setPropertyActionListener value="#{cita.pacPaciente}" 
+									target="#{reserBeanCita.paciente}" /> -->
 							</p:commandButton>
 							<hr></hr>
 						</h:panelGrid>
