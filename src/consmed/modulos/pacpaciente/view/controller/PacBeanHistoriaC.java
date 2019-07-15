@@ -2,6 +2,8 @@ package consmed.modulos.pacpaciente.view.controller;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.sql.Time;
+import java.util.Date;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
@@ -10,6 +12,7 @@ import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import consmed.core.model.entities.MedMedico;
 import consmed.core.model.entities.PacCabeceraHc;
 import consmed.core.model.entities.PacPaciente;
 import consmed.modulos.pacpaciente.model.PacManagerPaciente;
@@ -30,6 +33,19 @@ public class PacBeanHistoriaC implements Serializable {
 	private PacCabeceraHc pacCabeceraHc;
 	private boolean existeCab;
 	private boolean newHistoriaC;
+	private Date fechaAtencion;
+	private Time horaAtencion;
+	private MedMedico medico;
+	private int idMedico;
+	private String cama;
+	private String motivoConsulta;
+	private String enfermedadActual;
+	private String diagnostico;
+	private String evolucionMedica;
+	private String plan;
+	private String tratamiento;
+	private String estudios;
+	private String cuidados;
 	
 	@EJB
 	private PacManagerPaciente pacManagerPaciente;
@@ -216,6 +232,162 @@ public class PacBeanHistoriaC implements Serializable {
 
 	public void setIdCabecera(int idCabecera) {
 		this.idCabecera = idCabecera;
+	}
+
+
+
+	public Date getFechaAtencion() {
+		return fechaAtencion;
+	}
+
+
+
+	public void setFechaAtencion(Date fechaAtencion) {
+		this.fechaAtencion = fechaAtencion;
+	}
+
+
+
+	public Time getHoraAtencion() {
+		return horaAtencion;
+	}
+
+
+
+	public void setHoraAtencion(Time horaAtencion) {
+		this.horaAtencion = horaAtencion;
+	}
+
+
+
+	public MedMedico getMedico() {
+		return medico;
+	}
+
+
+
+	public void setMedico(MedMedico medico) {
+		this.medico = medico;
+	}
+
+
+
+	public int getIdMedico() {
+		return idMedico;
+	}
+
+
+
+	public void setIdMedico(int idMedico) {
+		this.idMedico = idMedico;
+	}
+
+
+
+	public String getCama() {
+		return cama;
+	}
+
+
+
+	public void setCama(String cama) {
+		this.cama = cama;
+	}
+
+
+
+	public String getMotivoConsulta() {
+		return motivoConsulta;
+	}
+
+
+
+	public void setMotivoConsulta(String motivoConsulta) {
+		this.motivoConsulta = motivoConsulta;
+	}
+
+
+
+	public String getEnfermedadActual() {
+		return enfermedadActual;
+	}
+
+
+
+	public void setEnfermedadActual(String enfermedadActual) {
+		this.enfermedadActual = enfermedadActual;
+	}
+
+
+
+	public String getDiagnostico() {
+		return diagnostico;
+	}
+
+
+
+	public void setDiagnostico(String diagnostico) {
+		this.diagnostico = diagnostico;
+	}
+
+
+
+	public String getEvolucionMedica() {
+		return evolucionMedica;
+	}
+
+
+
+	public void setEvolucionMedica(String evolucionMedica) {
+		this.evolucionMedica = evolucionMedica;
+	}
+
+
+
+	public String getPlan() {
+		return plan;
+	}
+
+
+
+	public void setPlan(String plan) {
+		this.plan = plan;
+	}
+
+
+
+	public String getTratamiento() {
+		return tratamiento;
+	}
+
+
+
+	public void setTratamiento(String tratamiento) {
+		this.tratamiento = tratamiento;
+	}
+
+
+
+	public String getEstudios() {
+		return estudios;
+	}
+
+
+
+	public void setEstudios(String estudios) {
+		this.estudios = estudios;
+	}
+
+
+
+	public String getCuidados() {
+		return cuidados;
+	}
+
+
+
+	public void setCuidados(String cuidados) {
+		this.cuidados = cuidados;
 	}
 	
 	
