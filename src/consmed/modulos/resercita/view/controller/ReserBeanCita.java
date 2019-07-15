@@ -14,6 +14,7 @@ import java.util.Map;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
+import javax.enterprise.context.SessionScoped;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -31,11 +32,12 @@ import consmed.modulos.segauditoria.model.SegManagerAuditoria;
 import consmed.modulos.view.util.JSFUtil;
 
 @Named
-@ViewScoped
+@SessionScoped
 public class ReserBeanCita implements Serializable {
 	private static final long serialVersionUID=1L;
 	
 	private int idMedico;
+	private int idMedicoSelect;
 	private MedMedico medMedico;
 	private PacPaciente paciente;
 	private int idUsuario;
@@ -52,6 +54,7 @@ public class ReserBeanCita implements Serializable {
 	private List<ReserCita> listCitasDocFecha;
 	private Map<String,String> listHorasDispo = new HashMap<String, String>();
 	private List<HorasDisponibles> listHoras=new ArrayList<HorasDisponibles>();
+	private List<MedMedico> listMedicos;
 	
 	private boolean showDatosCita;
 	
@@ -77,6 +80,7 @@ public class ReserBeanCita implements Serializable {
 			//Hoy
 			fecha=new Date();
 			try {
+				listMedicos=medManagerMedico.findAllMedMedicos();
 				Calendar calendar = Calendar.getInstance();
 				calendar.setTime(minFecha); // Configuramos la fecha que se recibe
 				calendar.add(Calendar.DAY_OF_YEAR, -1);  // numero de días a añadir, o restar en caso de días<0
@@ -130,7 +134,14 @@ public class ReserBeanCita implements Serializable {
 			}
 			listHorasDispo.clear();
 				listHoras.clear();
-		this.listCitasMedico=reserManagerCita.findCitaByDocFecha(idMedico, fecha);
+
+				System.out.println("idMedicoSelect: "+idMedicoSelect);
+				if(idMedicoSelect!=0) {
+					this.listCitasMedico=reserManagerCita.findCitaByDocFecha((idMedicoSelect), fecha);
+				}else {
+					this.listCitasMedico=reserManagerCita.findCitaByDocFecha(idMedico, fecha);
+				}
+		
 		System.out.println(listCitasMedico);
 		System.out.println(idMedico);
 		
@@ -246,14 +257,17 @@ public class ReserBeanCita implements Serializable {
 
 	public String actionCancelarCita() {
 		ReserCita cita=selectedCita;
+		idUsuario=authBeanLogin.getLogin().getId_usuario();
 		reserManagerCita.actualizarEstadoCita(cita, false);
+		System.out.println("Usuario auditoria: "+idUsuario);
 		segManagerAuditoria.ingresarBitacora(idUsuario, "actionCancelarCita","Paciente canceló cita");
 		try {
 			listCitasNoPagado=reserManagerCita.findCitaNoPagadoByPaciente(idPaciente);
+			JSFUtil.crearMensajeInfo("Se canceló cita");
 		} catch (ParseException e) {
 			e.getMessage();
 		}
-		return "";
+		return "reservaMenu";
 	}
 	
 	/**
@@ -283,7 +297,31 @@ public class ReserBeanCita implements Serializable {
 		return "";
 	}
 	
-	
+	/**
+	 * Reagendar cita
+	 * @return
+	 */
+	public String actionReagendar() {
+		System.out.println("Reagendar cita");
+		ReserCita cita=selectedCita;
+		try {
+			MedMedico medico=medManagerMedico.findMedicoById((idMedicoSelect));
+			int hora=Integer.parseInt(horaSelect);
+			@SuppressWarnings("deprecation")
+			Time ti=new Time(hora, 0, 0);
+			cita.setMedMedico(medico);
+			cita.setFechaReser(fecha);
+			cita.setHoraReser(ti);
+			reserManagerCita.actualizarCita(cita);
+			JSFUtil.crearMensajeInfo("Se reagendó");	
+			fecha=new Date();
+			this.listCitasDocFecha=reserManagerCita.findCitaByDocFecha(idMedico, fecha);
+		} catch (Exception e) {
+			System.err.println(e.getMessage());
+			JSFUtil.crearMensajeError("No se pudo reagendar");
+		}
+		return "";
+	}
 
 	
 	
@@ -423,6 +461,23 @@ public class ReserBeanCita implements Serializable {
 		this.paciente = paciente;
 	}
 
+	public int getIdMedicoSelect() {
+		return idMedicoSelect;
+	}
+
+	public void setIdMedicoSelect(int idMedicoSelect) {
+		this.idMedicoSelect = idMedicoSelect;
+	}
+
+	public List<MedMedico> getListMedicos() {
+		return listMedicos;
+	}
+
+	public void setListMedicos(List<MedMedico> listMedicos) {
+		this.listMedicos = listMedicos;
+	}
+
+	
 	
 	
 	

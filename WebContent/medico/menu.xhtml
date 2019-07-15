@@ -23,7 +23,7 @@
 				</p:menuitem>
 				<p:menuitem value="Inicio" title="Inicio" icon="fa fa-home"
 					action="menu?faces-redirect=true"></p:menuitem>
-				
+
 				<f:facet name="options">
 					<p:commandButton title="Datos de usuario" icon="fa fa-user"
 						value="#{authBeanLogin.login.nombres}" />
@@ -80,17 +80,82 @@
 										style="font-weight: bold" />
 								</h:panelGrid>
 							</p:outputPanel>
-							<p:commandButton value="Atender" action="#{pacBeanHistoriaC.actionHistoriaClinica(cita.pacPaciente)}"
-							 icon="fa fa-align-left"								
-								 title="Atender">
-							<!--  	<f:setPropertyActionListener value="#{cita.pacPaciente}" 
+							<p:commandButton value="Atender"
+								action="#{pacBeanHistoriaC.actionHistoriaClinica(cita.pacPaciente)}"
+								icon="fa fa-align-left" title="Atender">
+								<!--  	<f:setPropertyActionListener value="#{cita.pacPaciente}" 
 									target="#{reserBeanCita.paciente}" /> -->
+							</p:commandButton>
+							<p:commandButton value="Reagendar" icon="fa fa-calendar"
+								oncomplete="PF('reagendarDialog').show()"
+								title="Reagendar citas">
+								<f:setPropertyActionListener value="#{cita}"
+									target="#{reserBeanCita.selectedCita}" />
 							</p:commandButton>
 							<hr></hr>
 						</h:panelGrid>
 					</p:dataViewListItem>
 				</p:dataGrid>
 			</h:form>
+			<p:dialog header="Reagendar cita" widgetVar="reagendarDialog"
+				id="reagendarDialog" modal="true" height="450" width="600"
+				responsive="true" appendTo="@(body)">
+
+				<h:form id="form-medicos">
+					<p:messages>
+						<p:autoUpdate />
+					</p:messages>
+					<h:panelGrid columns="3" cellpadding="5">
+						<p:outputLabel for="medico" value="Seleccione médico:" />
+							<p:selectOneMenu id="medico" value="#{reserBeanCita.idMedicoSelect}"
+								autoWidth="100%" required="true"
+								requiredMessage="Seleccione un médico" effect="fade"
+								filter="true" filterMatchMode="startsWith">
+								<f:selectItem itemLabel="Seleccione un médico"
+									noSelectionOption="true" />
+								<f:selectItems value="#{reserBeanCita.listMedicos}" var="m"
+									itemLabel="#{m.nombresMed}" itemValue="#{m.idMedico}" />
+							</p:selectOneMenu>
+					</h:panelGrid>
+					<hr></hr>
+				</h:form>
+
+				<h:form id="form-mreserva">
+
+					<h:panelGrid columns="3" cellpadding="5">
+						<p:outputLabel for="fecha" value="Fecha:" />
+						<p:calendar id="fecha" value="#{reserBeanCita.fecha}"
+							showOn="button" mindate="#{reserBeanCita.minFecha}"
+							required="true" requiredMessage="Seleccione un día" />
+
+						<p:commandButton update=":dataHora"
+							action="#{reserBeanCita.setHorasDisponibles()}"
+							value="Ver horarios disponibles" />
+					</h:panelGrid>
+					<hr></hr>
+				</h:form>
+				<h:form id="dataHora">
+					<div id="datosCita"
+						style="display:#{(reserBeanCita.showDatosCita)?'none':'block'}">
+						<h:panelGrid columns="2" cellpadding="5">
+
+							<p:outputLabel for="hora2" value="Seleccione hora:" />
+							<p:selectOneMenu id="hora2" value="#{reserBeanCita.horaSelect}"
+								autoWidth="100%" required="true"
+								requiredMessage="Seleccione una hora" effect="fade"
+								filter="true" filterMatchMode="startsWith">
+								<f:selectItem itemLabel="Seleccione una hora"
+									noSelectionOption="true" />
+								<f:selectItems value="#{reserBeanCita.listHoras}" var="h"
+									itemLabel="#{h.hora}" itemValue="#{h.time}" />
+							</p:selectOneMenu>
+						</h:panelGrid>
+						<p:commandButton value="Reagendar cita" 
+							action="#{reserBeanCita.actionReagendar()}"
+							 update=":formCitas" />
+					</div>
+				</h:form>
+			</p:dialog>
 		</p:panel>
 	</div>
 
