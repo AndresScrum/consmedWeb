@@ -3,7 +3,8 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:h="http://java.sun.com/jsf/html"
-	xmlns:p="http://primefaces.org/ui">
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:jsf="http://xmlns.jcp.org/jsf">
 
 <h:head></h:head>
 <body>
@@ -98,14 +99,13 @@
 		<br></br>
 		<h:form>
 			<div style="display:#{(pacBeanHistoriaC.existeCab)?'block':'none'}">
-				<p:commandButton value="Historia clínica"
+				<p:commandButton value="Historias clínica" update=":historiaC"
 					action="#{pacBeanHistoriaC.actionNuevaHistoriaC()}"
-					update=":formHistoria" />
+					 />
 			</div>
 		</h:form>
 
-		<h:form id="formHistoria">
-			<div
+			<div jsf:id="historiaC"
 				style="display:#{(pacBeanHistoriaC.newHistoriaC)?'block':'none'}">
 				<hr></hr>
 
@@ -120,6 +120,9 @@
 						responsive="true" appendTo="@(body)">
 
 						<h:form>
+							<p:messages>
+								<p:autoUpdate />
+							</p:messages>
 							<h:panelGrid columns="2" cellpadding="5">
 								<p:outputLabel for="cama" value="Cama:" />
 								<p:inputText id="cama" placeholder="Ej: Cama 1 piso 2"
@@ -157,13 +160,16 @@
 								<p:inputText id="cuidados" placeholder="Cuidados"
 									value="#{pacBeanHistoriaC.cuidados}" rows="6" cols="33"
 									required="true" requiredMessage="Ingrese cuidados" />
+
 							</h:panelGrid>
+							<p:commandButton value="Guardar" style="buttonReservar"
+								action="#{pacBeanHistoriaC.actionGuardarHistoriC()}"
+								update="@form"  oncomplete="PF('mHistoria').hide();"/>
 						</h:form>
 					</p:dialog>
 				</div>
 
 			</div>
-		</h:form>
 	</p:panel>
 </body>
 </html>
