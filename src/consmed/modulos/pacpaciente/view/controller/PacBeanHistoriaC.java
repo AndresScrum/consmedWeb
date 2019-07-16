@@ -4,9 +4,11 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.sql.Time;
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
@@ -51,6 +53,8 @@ public class PacBeanHistoriaC implements Serializable {
 	private String tratamiento;
 	private String estudios;
 	private String cuidados;
+	private List<PacHistoriaClinica> listHistoriasC;
+	private PacHistoriaClinica historiaSelect;
 
 	@EJB
 	private PacManagerPaciente pacManagerPaciente;
@@ -135,14 +139,7 @@ public class PacBeanHistoriaC implements Serializable {
 		return "";
 	}
 
-	public void actionNuevaHistoriaC() {
-		System.out.println("Ac nueva HC: " + newHistoriaC);
-		if (newHistoriaC) {
-			newHistoriaC = false;
-		} else {
-			newHistoriaC = true;
-		}
-	}
+	
 
 	public String actionGuardarHistoriC() {
 		System.out.println("actionGuardarHistoriaC()");
@@ -162,11 +159,31 @@ public class PacBeanHistoriaC implements Serializable {
 			pacManagerPaciente.ingresarPacHistoriaC(cabecera, fechaAtencion, horaAtencion, medico, cama, motivoConsulta,
 					enfermedadActual, diagnostico, evolucionMedica, plan, tratamiento, estudios, cuidados);
 			JSFUtil.crearMensajeInfo("Se creo historia clínica");
+			listHistoriasC=pacManagerPaciente.findPacHistoriaClinicaByPaciente(paciente.getIdPaciente());
 		} catch (Exception e) {
 			JSFUtil.crearMensajeError(e.getMessage());
 		}
 
 		return "";
+	}
+	
+	public void actionGetHistoriasClinicas() {
+		System.out.println("Ac nueva HC: " + newHistoriaC);
+		if (newHistoriaC) {
+			newHistoriaC = false;
+		} else {
+			newHistoriaC = true;
+			try {
+				System.out.println("getHistoriasC idPaciente: "+paciente.getIdPaciente());
+				listHistoriasC=pacManagerPaciente.findPacHistoriaClinicaByPaciente(paciente.getIdPaciente());
+				
+			} catch (ParseException e) {
+				
+				e.printStackTrace();
+			}
+		}
+		
+		
 	}
 
 	public PacPaciente getPaciente() {
@@ -353,4 +370,21 @@ public class PacBeanHistoriaC implements Serializable {
 		this.cuidados = cuidados;
 	}
 
+	public List<PacHistoriaClinica> getListHistoriasC() {
+		return listHistoriasC;
+	}
+
+	public void setListHistoriasC(List<PacHistoriaClinica> listHistoriasC) {
+		this.listHistoriasC = listHistoriasC;
+	}
+
+	public PacHistoriaClinica getHistoriaSelect() {
+		return historiaSelect;
+	}
+
+	public void setHistoriaSelect(PacHistoriaClinica historiaSelect) {
+		this.historiaSelect = historiaSelect;
+	}
+
+	
 }

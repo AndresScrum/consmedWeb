@@ -3,8 +3,7 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:h="http://java.sun.com/jsf/html"
-	xmlns:p="http://primefaces.org/ui"
-	xmlns:jsf="http://xmlns.jcp.org/jsf">
+	xmlns:p="http://primefaces.org/ui" xmlns:jsf="http://xmlns.jcp.org/jsf">
 
 <h:head></h:head>
 <body>
@@ -100,76 +99,160 @@
 		<h:form>
 			<div style="display:#{(pacBeanHistoriaC.existeCab)?'block':'none'}">
 				<p:commandButton value="Historias clínica" update=":historiaC"
-					action="#{pacBeanHistoriaC.actionNuevaHistoriaC()}"
-					 />
+					action="#{pacBeanHistoriaC.actionGetHistoriasClinicas()}" />
 			</div>
 		</h:form>
 
-			<div jsf:id="historiaC"
-				style="display:#{(pacBeanHistoriaC.newHistoriaC)?'block':'none'}">
-				<hr></hr>
+		<div jsf:id="historiaC"
+			style="display:#{(pacBeanHistoriaC.newHistoriaC)?'block':'none'}">
+			<hr></hr>
 
-				<div align="center">
-					<h1>Historias clínicas</h1>
-					<div align="left">
-						<p:commandButton value="Nueva" style="buttonReservar"
-							oncomplete="PF('mHistoria').show();" />
-					</div>
-					<p:dialog header="Nueva historia clínica" widgetVar="mHistoria"
-						id="dialog" modal="true" height="450" width="600"
-						responsive="true" appendTo="@(body)">
-
-						<h:form>
-							<p:messages>
-								<p:autoUpdate />
-							</p:messages>
-							<h:panelGrid columns="2" cellpadding="5">
-								<p:outputLabel for="cama" value="Cama:" />
-								<p:inputText id="cama" placeholder="Ej: Cama 1 piso 2"
-									value="#{pacBeanHistoriaC.cama}" rows="6" cols="33"
-									required="true" requiredMessage="Ingrese cama" />
-								<p:outputLabel for="motivo" value="Motivo:" />
-								<p:inputText id="motivo" placeholder="Motivo de la consulta"
-									value="#{pacBeanHistoriaC.motivoConsulta}" rows="6" cols="33"
-									required="true" requiredMessage="Ingrese motivo de consulta" />
-								<p:outputLabel for="enfermedad" value="Cama:" />
-								<p:inputText id="enfermedad" placeholder="Emfermedad actual"
-									value="#{pacBeanHistoriaC.enfermedadActual}" rows="6" cols="33"
-									required="true" requiredMessage="Ingrese enfermedad actual" />
-								<p:outputLabel for="diagnostico" value="Diagnóstico:" />
-								<p:inputText id="diagnostico" placeholder="Diagnóstico"
-									value="#{pacBeanHistoriaC.diagnostico}" rows="6" cols="33"
-									required="true" requiredMessage="Ingrese diagnóstico" />
-								<p:outputLabel for="evolucion" value="Evolución:" />
-								<p:inputText id="evolucion" placeholder="Evolución médica"
-									value="#{pacBeanHistoriaC.evolucionMedica}" rows="6" cols="33"
-									required="true" requiredMessage="Ingrese evolución médica" />
-								<p:outputLabel for="plan" value="Plan:" />
-								<p:inputText id="plan" placeholder="Plan"
-									value="#{pacBeanHistoriaC.plan}" rows="6" cols="33"
-									required="true" requiredMessage="Ingrese plan" />
-								<p:outputLabel for="tratamiento" value="Tratamiento:" />
-								<p:inputText id="tratamiento" placeholder="Tratamiento"
-									value="#{pacBeanHistoriaC.tratamiento}" rows="6" cols="33"
-									required="true" requiredMessage="Ingrese tratamiento" />
-								<p:outputLabel for="estudios" value="Estudios:" />
-								<p:inputText id="estudios" placeholder="Estudios"
-									value="#{pacBeanHistoriaC.estudios}" rows="6" cols="33"
-									required="true" requiredMessage="Ingrese estudios" />
-								<p:outputLabel for="cuidados" value="Cuidados:" />
-								<p:inputText id="cuidados" placeholder="Cuidados"
-									value="#{pacBeanHistoriaC.cuidados}" rows="6" cols="33"
-									required="true" requiredMessage="Ingrese cuidados" />
-
-							</h:panelGrid>
-							<p:commandButton value="Guardar" style="buttonReservar"
-								action="#{pacBeanHistoriaC.actionGuardarHistoriC()}"
-								update="@form"  oncomplete="PF('mHistoria').hide();"/>
-						</h:form>
-					</p:dialog>
+			<div align="center">
+				<h1>Historias clínicas</h1>
+				<div align="left">
+					<p:commandButton value="Nueva" style="buttonReservar"
+						oncomplete="PF('mHistoria').show();" />
 				</div>
+				<br></br>
+				<div class="ui-fluid">
 
+					<p:dataTable var="hc" widgetVar="tabla1"
+						value="#{pacBeanHistoriaC.listHistoriasC}" reflow="true" rows="10"
+						paginator="true"
+						paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+						rowsPerPageTemplate="5,10,15">
+						<f:facet name="header">
+							<p:outputLabel value="Lista de historias clínicas"></p:outputLabel>
+						</f:facet>
+
+						<p:column headerText="Atención">
+							<h:outputText value="#{hc.fechaAtencion}" />
+						</p:column>
+
+						<p:column headerText="Hora">
+							<h:outputText value="#{hc.horaAtencion}" />
+						</p:column>
+						<p:column headerText="Médico">
+							<h:outputText
+								value="#{hc.medMedico.apellidosMed} #{hc.medMedico.nombresMed}" />
+						</p:column>
+						<p:column headerText="Cama">
+							<h:outputText value="#{hc.cama}" />
+						</p:column>
+						<p:column headerText="OPCIONES" style="width:90px" priority="1">
+
+							<p:commandButton update="formDetalles"
+								style="border:#0dc4fc;background-color:#0dc4fc" title="Detalles"
+								icon="fa fa-bars" oncomplete="PF('mDetalles').show();">
+								<f:setPropertyActionListener value="#{hc}"
+									target="#{pacBeanHistoriaC.historiaSelect}" />
+							</p:commandButton>
+						</p:column>
+
+					</p:dataTable>
+				</div>
+				<p:dialog header="Detalles historia clínica" widgetVar="mDetalles"
+					id="dialogDetalles" modal="true" height="450" width="600"
+					responsive="true" appendTo="@(body)">
+					<p:panelGrid columns="2"
+						rendered="#{not empty pacBeanHistoriaC.historiaSelect}"
+						columnClasses="label,value">
+
+						<h:outputText value="Fecha atanción:" />
+						<h:outputText
+							value="#{pacBeanHistoriaC.historiaSelect.fechaAtencion}"
+							style="font-weight: bold" />
+						<h:outputText value="Hora atanción:" />
+						<h:outputText
+							value="#{pacBeanHistoriaC.historiaSelect.horaAtencion}"
+							style="font-weight: bold" />
+						<h:outputText value="Médico:" />
+						<h:outputText
+							value="#{pacBeanHistoriaC.historiaSelect.medMedico.apellidosMed} #{pacBeanHistoriaC.historiaSelect.medMedico.nombresMed}"
+							style="font-weight: bold" />
+						<h:outputText value="Cama:" />
+						<h:outputText value="#{pacBeanHistoriaC.historiaSelect.cama}"
+							style="font-weight: bold" />
+						<h:outputText value="Motivo consulta:" />
+						<h:outputText
+							value="#{pacBeanHistoriaC.historiaSelect.motivoConsulta}"
+							style="font-weight: bold" />
+						<h:outputText value="Enfermedad actual:" />
+						<h:outputText
+							value="#{pacBeanHistoriaC.historiaSelect.enfermedadActual}"
+							style="font-weight: bold" />
+						<h:outputText value="Plan:" />
+						<h:outputText value="#{pacBeanHistoriaC.historiaSelect.plan}"
+							style="font-weight: bold" />
+						<h:outputText value="Tratamiento:" />
+						<h:outputText
+							value="#{pacBeanHistoriaC.historiaSelect.tratamiento}"
+							style="font-weight: bold" />
+						<h:outputText value="Estudios:" />
+						<h:outputText value="#{pacBeanHistoriaC.historiaSelect.estudios}"
+							style="font-weight: bold" />
+						<h:outputText value="Cuidados:" />
+						<h:outputText
+							value="#{pacBeanHistoriaC.historiaSelect.cuidados}"
+							style="font-weight: bold" />
+					</p:panelGrid>
+				</p:dialog>
+				<p:dialog header="Nueva historia clínica" widgetVar="mHistoria"
+					id="dialog" modal="true" height="450" width="600" responsive="true"
+					appendTo="@(body)">
+
+					<h:form>
+						<p:messages>
+							<p:autoUpdate />
+						</p:messages>
+						<h:panelGrid columns="2" cellpadding="5">
+							<p:outputLabel for="cama" value="Cama:" />
+							<p:inputText id="cama" placeholder="Ej: Cama 1 piso 2"
+								value="#{pacBeanHistoriaC.cama}" rows="6" cols="33"
+								required="true" requiredMessage="Ingrese cama" />
+							<p:outputLabel for="motivo" value="Motivo:" />
+							<p:inputTextarea id="motivo" placeholder="Motivo de la consulta"
+								value="#{pacBeanHistoriaC.motivoConsulta}" rows="6" cols="33"
+								required="true" requiredMessage="Ingrese motivo de consulta" />
+							<p:outputLabel for="enfermedad" value="Cama:" />
+							<p:inputTextarea id="enfermedad" placeholder="Emfermedad actual"
+								value="#{pacBeanHistoriaC.enfermedadActual}" rows="6" cols="33"
+								required="true" requiredMessage="Ingrese enfermedad actual" />
+							<p:outputLabel for="diagnostico" value="Diagnóstico:" />
+							<p:inputTextarea id="diagnostico" placeholder="Diagnóstico"
+								value="#{pacBeanHistoriaC.diagnostico}" rows="6" cols="33"
+								required="true" requiredMessage="Ingrese diagnóstico" />
+							<p:outputLabel for="evolucion" value="Evolución:" />
+							<p:inputTextarea id="evolucion" placeholder="Evolución médica"
+								value="#{pacBeanHistoriaC.evolucionMedica}" rows="6" cols="33"
+								required="true" requiredMessage="Ingrese evolución médica" />
+							<p:outputLabel for="plan" value="Plan:" />
+							<p:inputTextarea id="plan" placeholder="Plan"
+								value="#{pacBeanHistoriaC.plan}" rows="6" cols="33"
+								required="true" requiredMessage="Ingrese plan" />
+							<p:outputLabel for="tratamiento" value="Tratamiento:" />
+							<p:inputTextarea id="tratamiento" placeholder="Tratamiento"
+								value="#{pacBeanHistoriaC.tratamiento}" rows="6" cols="33"
+								required="true" requiredMessage="Ingrese tratamiento" />
+							<p:outputLabel for="estudios" value="Estudios:" />
+							<p:inputTextarea id="estudios" placeholder="Estudios"
+								value="#{pacBeanHistoriaC.estudios}" rows="6" cols="33"
+								required="true" requiredMessage="Ingrese estudios" />
+							<p:outputLabel for="cuidados" value="Cuidados:" />
+							<p:inputTextarea id="cuidados" placeholder="Cuidados"
+								value="#{pacBeanHistoriaC.cuidados}" rows="6" cols="33"
+								required="true" requiredMessage="Ingrese cuidados" />
+
+						</h:panelGrid>
+						<p:commandButton value="Guardar" style="buttonReservar"
+							action="#{pacBeanHistoriaC.actionGuardarHistoriC()}"
+							update="historiaC" oncomplete="PF('mHistoria').hide();" />
+						<p></p>
+					</h:form>
+				</p:dialog>
 			</div>
+
+		</div>
 	</p:panel>
 </body>
 </html>
