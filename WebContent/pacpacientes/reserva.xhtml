@@ -3,12 +3,12 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:h="http://java.sun.com/jsf/html"
-	xmlns:p="http://primefaces.org/ui">
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:jsf="http://xmlns.jcp.org/jsf">
 
 <h:head>
 
 </h:head>
-
 <body>
 	<div id="menu">
 		<h:form> 
@@ -58,7 +58,9 @@
 							value="Especialidad: #{med.medEspecialidad.nombreEsp}" />
 						<p:commandButton value="Reservar cita" style="buttonReservar"
 							action="#{reserBeanCita.actionListerSetIdMedico(med)}"
-							oncomplete="PF('mReserva').show();" />
+							oncomplete="PF('mReserva').show();" process="@this">
+							
+							</p:commandButton>
 					</h:panelGrid>
 
 				</p:panel>
@@ -67,9 +69,11 @@
 		
 </p:panel>
 	</div>
+	<div jsf:id="reservar">
 	<p:dialog header="Reservar cita" widgetVar="mReserva" id="dialog"
 		modal="true" height="450" width="600" responsive="true"
 		appendTo="@(body)">
+		
 
 
 		<h:form id="form-mreserva">
@@ -111,11 +115,14 @@
 						rows="6" cols="33" required="true"
 						requiredMessage="Ingrese síntoma !" />
 				</h:panelGrid>
-				<p:commandButton value="Reservar cita"
-					action="#{reserBeanCita.actionReservar(authBeanLogin.login.id_usuario)}" oncomplete="PF('mReserva').hide();" update="@form"  />
+				<p:commandButton  value="Reservar cita"
+					action="#{reserBeanCita.actionReservar(authBeanLogin.login.id_usuario)}" 
+					oncomplete="dialog" update="@form" ajax="false" >
+					</p:commandButton>
 			</div>
 		</h:form>
 
 	</p:dialog>
+	</div>
 </body>
 </html>

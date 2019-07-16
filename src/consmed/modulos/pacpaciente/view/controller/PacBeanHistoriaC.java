@@ -74,9 +74,8 @@ public class PacBeanHistoriaC implements Serializable {
 	public void init() {
 		System.out.println("Init() HC");
 		System.out.println(paciente);
-		if (paciente != null) {
-			getCabeceraHc();
-		}
+			
+		
 	}
 
 	public String actionHistoriaClinica(PacPaciente pacienteC) {
@@ -85,6 +84,14 @@ public class PacBeanHistoriaC implements Serializable {
 		System.out.println("Id paciente sele: " + paciente.getIdPaciente());
 		if (paciente != null) {
 			getCabeceraHc();
+		}else {
+			fechaNacimiento = "";
+			peso = 0;
+			altura = 0;
+			genero = "";
+			ocupacion = "";
+			idCabecera = 0;
+			existeCab = false;
 		}
 		return "historiaClinica?faces-redirect=true";
 	}
@@ -105,9 +112,11 @@ public class PacBeanHistoriaC implements Serializable {
 		} catch (Exception e) {
 			JSFUtil.crearMensajeError(e.getMessage());
 			e.printStackTrace();
+		}finally {
+			existeCab = true;
+			getCabeceraHc();
 		}
 		System.out.println("Ingreso cabecera hc");
-		getCabeceraHc();
 		return "";
 	}
 
@@ -139,6 +148,8 @@ public class PacBeanHistoriaC implements Serializable {
 		cabeceraCargar.setOcupacion(ocupacion);
 		try {
 			pacManagerPaciente.editarPacCabeceraHc(cabeceraCargar);
+			segManagerAuditoria.ingresarBitacora(authBeanLogin.getLogin().getId_usuario(), "editarPacCabeceraHc",
+					"Médico editó cabecera historia clínica");
 			JSFUtil.crearMensajeInfo("Actualización correcta!");
 		} catch (Exception e) {
 			JSFUtil.crearMensajeError("Error al actualizar");
@@ -167,6 +178,7 @@ public class PacBeanHistoriaC implements Serializable {
 			segManagerAuditoria.ingresarBitacora(authBeanLogin.getLogin().getId_usuario(), "ingresarPacHistoriaC",
 					"Médico crea historia clínica");
 			JSFUtil.crearMensajeInfo("Se creo historia clínica");
+			newHistoriaC = true;
 			listHistoriasC = pacManagerPaciente.findPacHistoriaClinicaByPaciente(paciente.getIdPaciente());
 		} catch (Exception e) {
 			JSFUtil.crearMensajeError(e.getMessage());

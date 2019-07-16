@@ -4,7 +4,7 @@
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:p="http://primefaces.org/ui"
-      xmlns:c="http://java.sun.com/jsp/jstl/core">
+	xmlns:c="http://java.sun.com/jsp/jstl/core">
 
 
 <h:head>
@@ -49,8 +49,11 @@
 				<p:menuitem>
 					<p:graphicImage value="resources/images/logo1.png"></p:graphicImage>
 				</p:menuitem>
-				<p:menuitem value="Reservas" action="#{reserBeanCita.actionGetCitasNoPagadosPac(authBeanLogin.login.id_usuario)}"
-					 icon="pi pi-calendar-plus" />
+				<p:menuitem value="Reservas"
+					action="#{reserBeanCita.actionGetCitasNoPagadosPac(authBeanLogin.login.id_usuario)}"
+					icon="pi pi-calendar-plus" />
+				<p:menuitem value="Reservar cita"
+					action="reserva?faces-redirect=true" icon="fa fa-clock-o" />
 
 				<f:facet name="options">
 					<p:menuButton value="#{authBeanLogin.login.nombres}"
@@ -69,7 +72,7 @@
 		<p:growl id="messages" showDetail="true" />
 		<div align="center">
 			<p:panel header="Bienvenido Paciente">
-			
+
 				<h:panelGrid columnClasses="value">
 					<div align="center">
 						<h1>Calendario</h1>
@@ -103,18 +106,23 @@
 			<h:panelGrid id="eventDetails" columns="2">
 				<p:outputLabel for="title" value="Evento:" />
 				<p:inputText id="title"
-					value="#{pacScheduleViewPaciente.event.title}" required="true" disabled="true" />
+					value="#{pacScheduleViewPaciente.event.title}" required="true"
+					disabled="true" />
 
 				<p:outputLabel for="from" value="Desde:" />
-				<p:calendar id="from" value="#{pacScheduleViewPaciente.event.startDate}" timeZone="GMT+5" pattern="dd/MM/yyyy HH:mm" disabled="true"/> 
+				<p:calendar id="from"
+					value="#{pacScheduleViewPaciente.event.startDate}" timeZone="GMT+5"
+					pattern="dd/MM/yyyy HH:mm" disabled="true" />
 
-				<p:outputLabel for="to" value="Hasta:" />				
-				<p:calendar id="to" value="#{pacScheduleViewPaciente.event.endDate}" timeZone="GMT+5" pattern="dd/MM/yyyy HH:mm" disabled="true"/>
-				
-            
- 
-            <p:commandButton  value="Aceptar" onclick="PF('myschedule').update();PF('eventDialog').hide();" />
-      
+				<p:outputLabel for="to" value="Hasta:" />
+				<p:calendar id="to" value="#{pacScheduleViewPaciente.event.endDate}"
+					timeZone="GMT+5" pattern="dd/MM/yyyy HH:mm" disabled="true" />
+
+
+
+				<p:commandButton value="Aceptar"
+					onclick="PF('myschedule').update();PF('eventDialog').hide();" />
+
 			</h:panelGrid>
 		</p:dialog>
 

@@ -15,9 +15,12 @@ import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.enterprise.context.SessionScoped;
+import javax.faces.event.ComponentSystemEvent;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
+
+import org.primefaces.PrimeFaces;
 
 import consmed.core.model.entities.MedMedico;
 import consmed.core.model.entities.PacPaciente;
@@ -107,6 +110,7 @@ public class ReserBeanCita implements Serializable {
 		
 	}
 	
+	
 	public String irMenuReservas(int idUsuario) {
 		setIdUsuario(idUsuario);
 		return "reservaMenu";
@@ -117,6 +121,11 @@ public class ReserBeanCita implements Serializable {
 		System.out.println("idMedico: "+medMedico.getIdMedico());
 		return "";
 	}
+	
+	public void resetearCampos() {
+		 PrimeFaces.current().resetInputs("dataHora");
+	}
+	
 	
 	public String formatFecha(Date fecha) {
 		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");  
@@ -214,10 +223,17 @@ public class ReserBeanCita implements Serializable {
 		reserManagerCita.ingresarReserCita(pacPaciente, medMedico, fecha, ti, asunto, sintoma);		
 		segManagerAuditoria.ingresarBitacora(idUsuario, "ingresarReserCita","Paciente crea una reserva de la cita");
 		JSFUtil.crearMensajeInfo("Reserva exitosa");
-
+		listCitasNoPagado=reserManagerCita.findCitaNoPagadoByPaciente(pacPaciente.getIdPaciente());
 		}catch(Exception e) {
 			JSFUtil.crearMensajeError("Hubo un error");
+		}finally {
+			horaSelect="";
+			asunto="";
+			sintoma="";
+			showDatosCita=true;
 		}
+
+		//resetearCampos();
 		return "reservaMenu";
 	}
 	
