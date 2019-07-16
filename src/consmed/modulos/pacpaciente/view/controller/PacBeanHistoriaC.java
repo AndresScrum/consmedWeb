@@ -21,9 +21,11 @@ import consmed.core.model.entities.MedMedico;
 import consmed.core.model.entities.PacCabeceraHc;
 import consmed.core.model.entities.PacHistoriaClinica;
 import consmed.core.model.entities.PacPaciente;
+import consmed.modulos.authautorizacionlogin.view.controller.AuthBeanLogin;
 import consmed.modulos.medmedico.model.MedManagerMedico;
 import consmed.modulos.pacpaciente.model.PacManagerPaciente;
 import consmed.modulos.resercita.view.controller.ReserBeanCita;
+import consmed.modulos.segauditoria.model.SegManagerAuditoria;
 import consmed.modulos.view.util.JSFUtil;
 
 @Named
@@ -60,9 +62,13 @@ public class PacBeanHistoriaC implements Serializable {
 	private PacManagerPaciente pacManagerPaciente;
 	@EJB
 	private MedManagerMedico medManagerMedico;
-	
+	@EJB
+	private SegManagerAuditoria segManagerAuditoria;
+
 	@Inject
 	private ReserBeanCita reserBeanCita;
+	@Inject
+	private AuthBeanLogin authBeanLogin;
 
 	@PostConstruct
 	public void init() {
@@ -93,6 +99,8 @@ public class PacBeanHistoriaC implements Serializable {
 		System.err.println(ocupacion);
 		try {
 			pacManagerPaciente.ingresarPacCabeceraHc(paciente, fechaNacimiento, peso, altura, genero, ocupacion);
+			segManagerAuditoria.ingresarBitacora(authBeanLogin.getLogin().getId_usuario(), "ingresarPacCabeceraHc",
+					"Médico crea cabecera historia clínica");
 			JSFUtil.crearMensajeInfo("Ingreso correcto!");
 		} catch (Exception e) {
 			JSFUtil.crearMensajeError(e.getMessage());
@@ -139,8 +147,6 @@ public class PacBeanHistoriaC implements Serializable {
 		return "";
 	}
 
-	
-
 	public String actionGuardarHistoriC() {
 		System.out.println("actionGuardarHistoriaC()");
 		fechaAtencion = new Date();
@@ -152,21 +158,23 @@ public class PacBeanHistoriaC implements Serializable {
 		try {
 			PacCabeceraHc cabecera;
 			cabecera = pacManagerPaciente.findCabeceraHcById(idCabecera);
-			idMedico=reserBeanCita.getIdMedico();
-			System.out.println("Id médico: "+idMedico);
+			idMedico = reserBeanCita.getIdMedico();
+			System.out.println("Id médico: " + idMedico);
 			MedMedico medico;
 			medico = medManagerMedico.findMedicoById(idMedico);
 			pacManagerPaciente.ingresarPacHistoriaC(cabecera, fechaAtencion, horaAtencion, medico, cama, motivoConsulta,
 					enfermedadActual, diagnostico, evolucionMedica, plan, tratamiento, estudios, cuidados);
+			segManagerAuditoria.ingresarBitacora(authBeanLogin.getLogin().getId_usuario(), "ingresarPacHistoriaC",
+					"Médico crea historia clínica");
 			JSFUtil.crearMensajeInfo("Se creo historia clínica");
-			listHistoriasC=pacManagerPaciente.findPacHistoriaClinicaByPaciente(paciente.getIdPaciente());
+			listHistoriasC = pacManagerPaciente.findPacHistoriaClinicaByPaciente(paciente.getIdPaciente());
 		} catch (Exception e) {
 			JSFUtil.crearMensajeError(e.getMessage());
 		}
 
 		return "";
 	}
-	
+
 	public void actionGetHistoriasClinicas() {
 		System.out.println("Ac nueva HC: " + newHistoriaC);
 		if (newHistoriaC) {
@@ -174,16 +182,15 @@ public class PacBeanHistoriaC implements Serializable {
 		} else {
 			newHistoriaC = true;
 			try {
-				System.out.println("getHistoriasC idPaciente: "+paciente.getIdPaciente());
-				listHistoriasC=pacManagerPaciente.findPacHistoriaClinicaByPaciente(paciente.getIdPaciente());
-				
+				System.out.println("getHistoriasC idPaciente: " + paciente.getIdPaciente());
+				listHistoriasC = pacManagerPaciente.findPacHistoriaClinicaByPaciente(paciente.getIdPaciente());
+
 			} catch (ParseException e) {
-				
+
 				e.printStackTrace();
 			}
 		}
-		
-		
+
 	}
 
 	public PacPaciente getPaciente() {
@@ -386,5 +393,4 @@ public class PacBeanHistoriaC implements Serializable {
 		this.historiaSelect = historiaSelect;
 	}
 
-	
 }

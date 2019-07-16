@@ -260,7 +260,7 @@ public class ReserBeanCita implements Serializable {
 		idUsuario=authBeanLogin.getLogin().getId_usuario();
 		reserManagerCita.actualizarEstadoCita(cita, false);
 		System.out.println("Usuario auditoria: "+idUsuario);
-		segManagerAuditoria.ingresarBitacora(idUsuario, "actionCancelarCita","Paciente canceló cita");
+		segManagerAuditoria.ingresarBitacora(idUsuario, "actualizarEstadoCita","Paciente canceló cita");
 		try {
 			listCitasNoPagado=reserManagerCita.findCitaNoPagadoByPaciente(idPaciente);
 			JSFUtil.crearMensajeInfo("Se canceló cita");
@@ -313,6 +313,8 @@ public class ReserBeanCita implements Serializable {
 			cita.setFechaReser(fecha);
 			cita.setHoraReser(ti);
 			reserManagerCita.actualizarCita(cita);
+			segManagerAuditoria.ingresarBitacora(authBeanLogin.getLogin().getId_usuario(), "actualizarCita",
+					"Médico actualiza cita");
 			JSFUtil.crearMensajeInfo("Se reagendó");	
 			fecha=new Date();
 			this.listCitasDocFecha=reserManagerCita.findCitaByDocFecha(idMedico, fecha);
