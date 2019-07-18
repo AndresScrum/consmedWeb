@@ -25,6 +25,7 @@ import consmed.core.model.entities.ReserCita;
 import consmed.modulos.authautorizacionlogin.view.controller.AuthBeanLogin;
 import consmed.modulos.medmedico.model.MedManagerMedico;
 import consmed.modulos.pacpaciente.model.PacManagerPaciente;
+import consmed.modulos.resercita.model.ReserManagerCita;
 import consmed.modulos.resercita.view.controller.ReserBeanCita;
 import consmed.modulos.segauditoria.model.SegManagerAuditoria;
 import consmed.modulos.view.util.JSFUtil;
@@ -66,6 +67,8 @@ public class PacBeanHistoriaC implements Serializable {
 	private MedManagerMedico medManagerMedico;
 	@EJB
 	private SegManagerAuditoria segManagerAuditoria;
+	@EJB
+	private ReserManagerCita reserManagerCita;
 
 	@Inject
 	private ReserBeanCita reserBeanCita;
@@ -180,7 +183,8 @@ public class PacBeanHistoriaC implements Serializable {
 					enfermedadActual, diagnostico, evolucionMedica, plan, tratamiento, estudios, cuidados);
 			segManagerAuditoria.ingresarBitacora(authBeanLogin.getLogin().getId_usuario(), "ingresarPacHistoriaC",
 					"Médico crea historia clínica");
-			
+			System.out.println("Cita asunto: "+citaSelect.getAsuntoReser());
+			actualizarCitaEstado(citaSelect, authBeanLogin.getLogin().getId_usuario());
 			JSFUtil.crearMensajeInfo("Se creo historia clínica");
 			newHistoriaC = true;
 			listHistoriasC = pacManagerPaciente.findPacHistoriaClinicaByPaciente(paciente.getIdPaciente());
@@ -189,6 +193,17 @@ public class PacBeanHistoriaC implements Serializable {
 		}
 
 		return "";
+	}
+	
+	public void actualizarCitaEstado(ReserCita cita, int idUsuario) {
+		try {
+			cita.setActivoReser(false);
+			reserManagerCita.actualizarCita(cita);
+			segManagerAuditoria.ingresarBitacora(idUsuario, "actualizarCita", "Actualizar cita después de guardar historia clínica");
+		} catch (Exception e) {
+			System.err.println(e.getMessage());
+			JSFUtil.crearMensajeError("Erro actualizar estado cita");
+		}
 	}
 
 	public void actionGetHistoriasClinicas() {
