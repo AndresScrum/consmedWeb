@@ -33,13 +33,14 @@
 				<p:menuitem>
 					<p:graphicImage value="resources/images/logo1.png"></p:graphicImage>
 				</p:menuitem>
-				<p:menuitem value="Menú paciente" action="menu?faces-redirect=true"
-					icon="pi pi-calendar-plus" />
+				<p:menuitem value="Inicio" action="menu?faces-redirect=true"
+					icon="fa fa-home" />
 				<p:menuitem value="Reservas pendientes"
 					action="reservaMenu?faces-redirect=true" icon="fa fa-table" />
 				<p:menuitem value="Reservar cita"
 					action="reserva?faces-redirect=true" icon="fa fa-clock-o" />
-
+				<p:menuitem value="Facturas" action="facturas?faces-redirect=true"
+					icon="fa fa-dollar" />
 				<f:facet name="options">
 					<p:menuButton value="#{authBeanLogin.login.nombres}"
 						title="Opciones del Paciente" icon="fa fa-user">
@@ -89,9 +90,9 @@
 								<f:setPropertyActionListener value="#{cita}"
 									target="#{reserBeanCita.selectedCita}" />
 							</p:commandButton>
-							<p:commandButton value="Cancelar" icon="fa fa-remove"  oncomplete="PF('cancelDialog').show()"
-								title="Cancelar citas">
-								<f:setPropertyActionListener value="#{cita}" 
+							<p:commandButton value="Cancelar" icon="fa fa-remove"
+								oncomplete="PF('cancelDialog').show()" title="Cancelar citas">
+								<f:setPropertyActionListener value="#{cita}"
 									target="#{reserBeanCita.selectedCita}" />
 							</p:commandButton>
 							<hr></hr>
@@ -129,13 +130,15 @@
 						</p:panelGrid>
 					</p:outputPanel>
 				</p:dialog>
-				
-				<p:dialog header="Seguro que desea cancelar?" widgetVar="cancelDialog" modal="true"
-					showEffect="fade" hideEffect="fade" resizable="false">
-					<p:commandButton value="Cancelar" icon="fa fa-remove" update=":formCitas"
-					 oncomplete="PF('cancelDialog').hide()" action="#{reserBeanCita.actionCancelarCita()}"
-								title="Cancelar citas">								
-							</p:commandButton>
+
+				<p:dialog header="Seguro que desea cancelar?"
+					widgetVar="cancelDialog" modal="true" showEffect="fade"
+					hideEffect="fade" resizable="false">
+					<p:commandButton value="Cancelar" icon="fa fa-remove"
+						update=":formCitas" oncomplete="PF('cancelDialog').hide()"
+						action="#{reserBeanCita.actionCancelarCita()}"
+						title="Cancelar citas">
+					</p:commandButton>
 				</p:dialog>
 			</h:form>
 		</p:panel>

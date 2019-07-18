@@ -17,12 +17,14 @@ import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import consmed.core.model.entities.FactHospital;
 import consmed.core.model.entities.MedMedico;
 import consmed.core.model.entities.PacCabeceraHc;
 import consmed.core.model.entities.PacHistoriaClinica;
 import consmed.core.model.entities.PacPaciente;
 import consmed.core.model.entities.ReserCita;
 import consmed.modulos.authautorizacionlogin.view.controller.AuthBeanLogin;
+import consmed.modulos.factfacturacion.model.FactManagerFacturacion;
 import consmed.modulos.medmedico.model.MedManagerMedico;
 import consmed.modulos.pacpaciente.model.PacManagerPaciente;
 import consmed.modulos.resercita.model.ReserManagerCita;
@@ -69,6 +71,8 @@ public class PacBeanHistoriaC implements Serializable {
 	private SegManagerAuditoria segManagerAuditoria;
 	@EJB
 	private ReserManagerCita reserManagerCita;
+	@EJB
+	private FactManagerFacturacion factManagerFacturacion;
 
 	@Inject
 	private ReserBeanCita reserBeanCita;
@@ -193,7 +197,8 @@ public class PacBeanHistoriaC implements Serializable {
 					enfermedadActual, diagnostico, evolucionMedica, plan, tratamiento, estudios, cuidados);
 			segManagerAuditoria.ingresarBitacora(authBeanLogin.getLogin().getId_usuario(), "ingresarPacHistoriaC",
 					"Médico crea historia clínica");
-			System.out.println("Cita asunto: "+citaSelect.getAsuntoReser());
+			System.out.println("Cita asunto: "+citaSelect.getAsuntoReser());			
+			facturar(citaSelect.getPacPaciente(),authBeanLogin.getLogin().getId_usuario(), motivoConsulta);
 			actualizarCitaEstado(citaSelect, authBeanLogin.getLogin().getId_usuario());
 			JSFUtil.crearMensajeInfo("Se creo historia clínica");
 			newHistoriaC = true;
@@ -218,11 +223,21 @@ public class PacBeanHistoriaC implements Serializable {
 	public void actualizarCitaEstado(ReserCita cita, int idUsuario) {
 		try {
 			cita.setActivoReser(false);
+			cita.setPagoReser(true);
 			reserManagerCita.actualizarCita(cita);
 			segManagerAuditoria.ingresarBitacora(idUsuario, "actualizarCita", "Actualizar cita después de guardar historia clínica");
 		} catch (Exception e) {
 			System.err.println(e.getMessage());
 			JSFUtil.crearMensajeError("Erro actualizar estado cita");
+		}
+	}
+	
+	public void facturar(PacPaciente pacPaciente, int idUsuario, String detalle) {
+		FactHospital factHospital= factManagerFacturacion.findFacHospitalById(1);
+		if(factHospital!=null && pacPaciente!=null) {
+			factManagerFacturacion.ingresarFactFactura(true,detalle , new BigDecimal(2.4), new BigDecimal(17.6), new BigDecimal(20), 
+					factHospital, pacPaciente);
+			segManagerAuditoria.ingresarBitacora(idUsuario, "ingresarFactFactura", "Crea factura");
 		}
 	}
 

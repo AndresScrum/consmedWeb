@@ -30,7 +30,7 @@
 				</p:menuitem>
 				<p:menuitem value="ATRÁS" title="ATRÁS" icon="fa fa-arrow-left"
 					action="menu?faces-redirect=true" />
-<f:facet name="options">
+				<f:facet name="options">
 					<p:commandButton title="Datos de usuario" icon="fa fa-user"
 						value="#{authBeanLogin.login.nombres}" />
 					<p:commandButton title="Cerrar sesión" icon="fa fa-power-off"
@@ -57,34 +57,34 @@
 						placeholder="Ingrese una imagen"
 						value="#{authBeanLogin.editarpac.fotoPac}" height="150">
 						<f:facet name="toolbar">
-							<span class="ql-formats">
-							
-							</span>
+							<span class="ql-formats"> </span>
 							<span class="ql-formats"> </span>
 						</f:facet>
 					</p:textEditor>
 				</f:facet>
-			
-					<p:outputLabel value="Nombres:" />
 
-					<p:inputText value="#{authBeanLogin.editarpac.nombresPac}" required="true"
-						requiredMessage="Ingrese los nombres del Paciente!"
-						maxlength="100" />
+				<p:outputLabel value="Nombres:" />
+
+				<p:inputText value="#{authBeanLogin.editarpac.nombresPac}"
+					required="true" requiredMessage="Ingrese los nombres del Paciente!"
+					maxlength="100" />
 				<p:outputLabel value="Apellidos:" />
 				<p:inputText value="#{authBeanLogin.editarpac.apellidosPac}"
 					required="true"
 					requiredMessage="Ingrese los apellidos del Paciente!"
 					maxlength="100" />
 				<p:outputLabel value="Correo:" />
-				<p:inputText value="#{authBeanLogin.editarpac.correoPac}" required="true"
-					requiredMessage="Ingrese el correo del Paciente!" maxlength="50" />
+				<p:inputText value="#{authBeanLogin.editarpac.correoPac}"
+					required="true" requiredMessage="Ingrese el correo del Paciente!"
+					maxlength="50" />
 				<p:outputLabel value="Identificación:" />
 				<p:inputText value="#{authBeanLogin.editarpac.identificacion}"
 					required="true" requiredMessage="Ingrese la Ci/Ruc del paciente!"
 					maxlength="20" />
 				<p:outputLabel value="Teléfono:" />
-				<p:inputText value="#{authBeanLogin.editarpac.telefonoPac}" required="true"
-					requiredMessage="Ingrese el teléfono del Paciente!" maxlength="20" />
+				<p:inputText value="#{authBeanLogin.editarpac.telefonoPac}"
+					required="true" requiredMessage="Ingrese el teléfono del Paciente!"
+					maxlength="20" />
 				<p:outputLabel value="Dirección:" />
 				<p:inputText value="#{authBeanLogin.editarpac.direccionPac}"
 					required="true"
@@ -94,7 +94,8 @@
 			</p:panelGrid>
 
 			<p:panelGrid columns="1" layout="grid">
-				<p:commandButton value="ACTUALIZAR DATOS" icon="fa fa-arrow-circle-right"
+				<p:commandButton value="ACTUALIZAR DATOS"
+					icon="fa fa-arrow-circle-right"
 					actionListener="#{pacBeanPaciente.actionListenerEditarPacientePerfil()}"
 					oncomplete="nuevaOpcion" update="@form,:form2:tabla1" ajax="false"></p:commandButton>
 
