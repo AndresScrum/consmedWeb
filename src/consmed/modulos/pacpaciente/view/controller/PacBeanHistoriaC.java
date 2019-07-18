@@ -21,6 +21,7 @@ import consmed.core.model.entities.MedMedico;
 import consmed.core.model.entities.PacCabeceraHc;
 import consmed.core.model.entities.PacHistoriaClinica;
 import consmed.core.model.entities.PacPaciente;
+import consmed.core.model.entities.ReserCita;
 import consmed.modulos.authautorizacionlogin.view.controller.AuthBeanLogin;
 import consmed.modulos.medmedico.model.MedManagerMedico;
 import consmed.modulos.pacpaciente.model.PacManagerPaciente;
@@ -57,6 +58,7 @@ public class PacBeanHistoriaC implements Serializable {
 	private String cuidados;
 	private List<PacHistoriaClinica> listHistoriasC;
 	private PacHistoriaClinica historiaSelect;
+	private ReserCita citaSelect;
 
 	@EJB
 	private PacManagerPaciente pacManagerPaciente;
@@ -78,8 +80,9 @@ public class PacBeanHistoriaC implements Serializable {
 		
 	}
 
-	public String actionHistoriaClinica(PacPaciente pacienteC) {
-		paciente = pacienteC;
+	public String actionHistoriaClinica(ReserCita cita) {
+		paciente = cita.getPacPaciente();
+		citaSelect=cita;
 		// setPaciente(paciente);
 		System.out.println("Id paciente sele: " + paciente.getIdPaciente());
 		if (paciente != null) {
@@ -177,6 +180,7 @@ public class PacBeanHistoriaC implements Serializable {
 					enfermedadActual, diagnostico, evolucionMedica, plan, tratamiento, estudios, cuidados);
 			segManagerAuditoria.ingresarBitacora(authBeanLogin.getLogin().getId_usuario(), "ingresarPacHistoriaC",
 					"Médico crea historia clínica");
+			
 			JSFUtil.crearMensajeInfo("Se creo historia clínica");
 			newHistoriaC = true;
 			listHistoriasC = pacManagerPaciente.findPacHistoriaClinicaByPaciente(paciente.getIdPaciente());
@@ -404,5 +408,15 @@ public class PacBeanHistoriaC implements Serializable {
 	public void setHistoriaSelect(PacHistoriaClinica historiaSelect) {
 		this.historiaSelect = historiaSelect;
 	}
+
+	public ReserCita getCitaSelect() {
+		return citaSelect;
+	}
+
+	public void setCitaSelect(ReserCita citaSelect) {
+		this.citaSelect = citaSelect;
+	}
+	
+	
 
 }
