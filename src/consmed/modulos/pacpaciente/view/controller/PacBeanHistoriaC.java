@@ -159,6 +159,16 @@ public class PacBeanHistoriaC implements Serializable {
 			JSFUtil.crearMensajeInfo("Actualización correcta!");
 		} catch (Exception e) {
 			JSFUtil.crearMensajeError("Error al actualizar");
+		}finally {
+			cama="";
+			motivoConsulta="";
+			enfermedadActual="";
+			diagnostico="";
+			evolucionMedica="";
+			plan="";
+			tratamiento="";
+			estudios="";
+			cuidados="";
 		}
 
 		return "";
@@ -190,6 +200,16 @@ public class PacBeanHistoriaC implements Serializable {
 			listHistoriasC = pacManagerPaciente.findPacHistoriaClinicaByPaciente(paciente.getIdPaciente());
 		} catch (Exception e) {
 			JSFUtil.crearMensajeError(e.getMessage());
+		}finally {
+			cama="";
+			motivoConsulta="";
+			enfermedadActual="";
+			diagnostico="";
+			evolucionMedica="";
+			plan="";
+			tratamiento="";
+			estudios="";
+			cuidados="";
 		}
 
 		return "";
